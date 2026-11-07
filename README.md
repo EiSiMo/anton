@@ -20,19 +20,6 @@
 |:---:|:---:|:---:|:---:|
 | <img src="assets/screenshots/station.jpg" width="180" alt="Personnel file with rank, progress, streak and letters due for review"> | <img src="assets/screenshots/case.jpg" width="180" alt="An ID card with the surname marked, the fields as tabs and the talk button"> | <img src="assets/screenshots/plausibility.jpg" width="180" alt="Plausibility dialog showing what was sent and what was expected"> | <img src="assets/screenshots/certificate.jpg" width="180" alt="Appointment certificate for the rank Polizeimeister"> |
 
-<details>
-<summary>Show more screens</summary>
-<br>
-<table>
-  <tr>
-    <td><img src="assets/screenshots/licence.jpg" width="180" alt="A fictional driving licence"></td>
-    <td><img src="assets/screenshots/plate.jpg" width="180" alt="A licence plate to spell"></td>
-    <td><img src="assets/screenshots/table.jpg" width="180" alt="Spelling table with mastery per letter"></td>
-    <td><img src="assets/screenshots/top_rank.jpg" width="180" alt="Personnel file at the highest rank"></td>
-  </tr>
-</table>
-</details>
-
 Meier or Mayer, Schwarzenbacher-Quiring, VG-ZN 3181: Anton hands you fictional ID cards,
 driving licences and licence plates, and you transmit them by speaking the classic German
 spelling alphabet, from Anton and Berta to Xanthippe and Zacharias. Error-free cases carry
