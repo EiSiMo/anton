@@ -396,6 +396,39 @@
     "portrait": "yousef-al-masri.webp"
   },
   {
+    "surname": "Aydin",
+    "firstName": "Furkan",
+    "sex": "MALE",
+    "birthDate": "2000-02-22",
+    "birthPlace": "Hamm",
+    "expiryDate": "2033-06-15",
+    "level": 3,
+    "condition": "tired",
+    "portrait": "furkan-aydin.webp"
+  },
+  {
+    "surname": "Bakri",
+    "firstName": "Samira",
+    "sex": "FEMALE",
+    "birthDate": "1970-01-29",
+    "birthPlace": "Kairo",
+    "expiryDate": "2034-12-15",
+    "level": 3,
+    "condition": "tired",
+    "portrait": "samira-bakri.webp"
+  },
+  {
+    "surname": "Bozkurt",
+    "firstName": "Ismail",
+    "sex": "MALE",
+    "birthDate": "1971-08-03",
+    "birthPlace": "Trabzon",
+    "expiryDate": "2029-04-01",
+    "level": 3,
+    "condition": "tired",
+    "portrait": "ismail-bozkurt.webp"
+  },
+  {
     "surname": "Cakiroglu",
     "firstName": "Yasemin",
     "sex": "FEMALE",
@@ -429,6 +462,28 @@
     "portrait": "vasil-dimitrov.webp"
   },
   {
+    "surname": "El-Amrani",
+    "firstName": "Ayoub",
+    "sex": "MALE",
+    "birthDate": "1997-09-02",
+    "birthPlace": "Casablanca",
+    "expiryDate": "2030-07-31",
+    "level": 3,
+    "condition": "normal",
+    "portrait": "ayoub-el-amrani.webp"
+  },
+  {
+    "surname": "Erdem",
+    "firstName": "Tolga",
+    "sex": "MALE",
+    "birthDate": "1986-07-17",
+    "birthPlace": "Offenbach",
+    "expiryDate": "2033-10-06",
+    "level": 3,
+    "condition": "normal",
+    "portrait": "tolga-erdem.webp"
+  },
+  {
     "surname": "Fernandes",
     "firstName": "Joao",
     "sex": "MALE",
@@ -438,6 +493,17 @@
     "level": 3,
     "condition": "normal",
     "portrait": "joao-fernandes.webp"
+  },
+  {
+    "surname": "Güler",
+    "firstName": "Onur",
+    "sex": "MALE",
+    "birthDate": "2001-03-05",
+    "birthPlace": "Izmir",
+    "expiryDate": "2032-11-15",
+    "level": 3,
+    "condition": "wrecked",
+    "portrait": "onur-gueler.webp"
   },
   {
     "surname": "Haddad",
@@ -451,6 +517,28 @@
     "portrait": "layla-haddad.webp"
   },
   {
+    "surname": "Hamdan",
+    "firstName": "Rania",
+    "sex": "FEMALE",
+    "birthDate": "1991-10-14",
+    "birthPlace": "Amman",
+    "expiryDate": "2028-03-12",
+    "level": 3,
+    "condition": "normal",
+    "portrait": "rania-hamdan.webp"
+  },
+  {
+    "surname": "Kaplan",
+    "firstName": "Enes",
+    "sex": "MALE",
+    "birthDate": "2005-09-09",
+    "birthPlace": "Berlin",
+    "expiryDate": "2032-05-26",
+    "level": 3,
+    "condition": "normal",
+    "portrait": "enes-kaplan.webp"
+  },
+  {
     "surname": "Karaca",
     "firstName": "Emre",
     "sex": "MALE",
@@ -462,6 +550,39 @@
     "portrait": "emre-karaca.webp"
   },
   {
+    "surname": "Khalil",
+    "firstName": "Omar",
+    "sex": "MALE",
+    "birthDate": "1999-01-12",
+    "birthPlace": "Damaskus",
+    "expiryDate": "2029-04-07",
+    "level": 3,
+    "condition": "tired",
+    "portrait": "omar-khalil.webp"
+  },
+  {
+    "surname": "Kilic",
+    "firstName": "Hakan",
+    "sex": "MALE",
+    "birthDate": "1979-01-19",
+    "birthPlace": "Kayseri",
+    "expiryDate": "2029-04-22",
+    "level": 3,
+    "condition": "normal",
+    "portrait": "hakan-kilic.webp"
+  },
+  {
+    "surname": "Korkmaz",
+    "firstName": "Zeynep",
+    "sex": "FEMALE",
+    "birthDate": "1968-12-11",
+    "birthPlace": "Ankara",
+    "expiryDate": "2032-07-06",
+    "level": 3,
+    "condition": "normal",
+    "portrait": "zeynep-korkmaz.webp"
+  },
+  {
     "surname": "Kowalczyk",
     "firstName": "Agnieszka",
     "sex": "FEMALE",
@@ -471,6 +592,28 @@
     "level": 3,
     "condition": "normal",
     "portrait": "agnieszka-kowalczyk.webp"
+  },
+  {
+    "surname": "Mansour",
+    "firstName": "Bilal",
+    "sex": "MALE",
+    "birthDate": "2004-05-23",
+    "birthPlace": "Essen",
+    "expiryDate": "2034-01-23",
+    "level": 3,
+    "condition": "normal",
+    "portrait": "bilal-mansour.webp"
+  },
+  {
+    "surname": "Nasser",
+    "firstName": "Tarek",
+    "sex": "MALE",
+    "birthDate": "2001-06-28",
+    "birthPlace": "Homs",
+    "expiryDate": "2028-03-26",
+    "level": 3,
+    "condition": "wrecked",
+    "portrait": "tarek-nasser.webp"
   },
   {
     "surname": "Nwachukwu",
@@ -517,6 +660,39 @@
     "portrait": "ximena-rodriguez.webp"
   },
   {
+    "surname": "Saadi",
+    "firstName": "Nour",
+    "sex": "FEMALE",
+    "birthDate": "2003-06-06",
+    "birthPlace": "Hannover",
+    "expiryDate": "2033-03-21",
+    "level": 3,
+    "condition": "normal",
+    "portrait": "nour-saadi.webp"
+  },
+  {
+    "surname": "Sahin",
+    "firstName": "Elif",
+    "sex": "FEMALE",
+    "birthDate": "1994-04-26",
+    "birthPlace": "Stuttgart",
+    "expiryDate": "2032-12-01",
+    "level": 3,
+    "condition": "normal",
+    "portrait": "elif-sahin.webp"
+  },
+  {
+    "surname": "Saleh",
+    "firstName": "Karim",
+    "sex": "MALE",
+    "birthDate": "2002-10-08",
+    "birthPlace": "Bremen",
+    "expiryDate": "2034-03-29",
+    "level": 3,
+    "condition": "normal",
+    "portrait": "karim-saleh.webp"
+  },
+  {
     "surname": "Tran",
     "firstName": "Quang Minh",
     "sex": "MALE",
@@ -526,6 +702,39 @@
     "level": 3,
     "condition": "tired",
     "portrait": "quang-minh-tran.webp"
+  },
+  {
+    "surname": "Yildiz",
+    "firstName": "Burak",
+    "sex": "MALE",
+    "birthDate": "2003-06-14",
+    "birthPlace": "Mannheim",
+    "expiryDate": "2032-04-01",
+    "level": 3,
+    "condition": "normal",
+    "portrait": "burak-yildiz.webp"
+  },
+  {
+    "surname": "Öztürk",
+    "firstName": "Serkan",
+    "sex": "MALE",
+    "birthDate": "1998-11-30",
+    "birthPlace": "Köln",
+    "expiryDate": "2032-03-30",
+    "level": 3,
+    "condition": "normal",
+    "portrait": "serkan-oeztuerk.webp"
+  },
+  {
+    "surname": "Abdallah",
+    "firstName": "Yassin",
+    "sex": "MALE",
+    "birthDate": "2006-03-15",
+    "birthPlace": "Dortmund",
+    "expiryDate": "2032-03-09",
+    "level": 4,
+    "condition": "normal",
+    "portrait": "yassin-abdallah.webp"
   },
   {
     "surname": "Chatzigiannakis",
@@ -548,6 +757,17 @@
     "level": 4,
     "condition": "normal",
     "portrait": "oluwaseun-oyekunle.webp"
+  },
+  {
+    "surname": "Qasim",
+    "firstName": "Hassan",
+    "sex": "MALE",
+    "birthDate": "1975-02-20",
+    "birthPlace": "Bagdad",
+    "expiryDate": "2028-10-07",
+    "level": 4,
+    "condition": "normal",
+    "portrait": "hassan-qasim.webp"
   },
   {
     "surname": "Quackenbusch",
