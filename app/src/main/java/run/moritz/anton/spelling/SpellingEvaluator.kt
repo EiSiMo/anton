@@ -41,6 +41,11 @@ class SpellingEvaluator(table: SpellingTable) {
         }
     }
 
+    /** How many leading [symbols] complete the field, or null if they do not. Later symbols belong to what follows. */
+    fun symbolsCompleting(field: Field, symbols: List<String>): Int? = (1..symbols.size).firstOrNull { count ->
+        evaluate(field, symbols.take(count)) is Evaluation.Correct
+    }
+
     /** The field as joined symbols, the way a player who spells it perfectly would send it. */
     fun symbolsOf(field: Field): List<String> {
         val symbols = mutableListOf<String>()

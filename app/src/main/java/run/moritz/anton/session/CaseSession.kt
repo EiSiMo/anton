@@ -5,6 +5,9 @@ import run.moritz.anton.progress.ProgressEvent
 import run.moritz.anton.spelling.Evaluation
 import run.moritz.anton.spelling.SpellingEvaluator
 
+/** The result of [CaseSession.advance]: how many symbols were used up and what that changed. */
+class Advance(val consumed: Int, val events: List<ProgressEvent>)
+
 /**
  * One case being worked on, field by field.
  *
@@ -52,6 +55,25 @@ class CaseSession(
         }
     }
 
+    /**
+     * Confirms every field that [symbols] complete from the start, while the talk key is still held. Whatever
+     * stays unfinished is left for later, so an incomplete field neither advances nor counts as not understood.
+     */
+    fun advance(symbols: List<String>): Advance {
+        check(pending == null) { "The plausibility dialog is still open" }
+        var consumed = 0
+        val events = mutableListOf<ProgressEvent>()
+        while (true) {
+            val field = currentField ?: break
+            val rest = symbols.drop(consumed)
+            val count = evaluator.symbolsCompleting(field, rest) ?: break
+            val correct = evaluator.evaluate(field, rest.take(count)) as Evaluation.Correct
+            events += confirm(correct.confirmed)
+            consumed += count
+        }
+        return Advance(consumed, events)
+    }
+
     /** The player accepts the error. The field is repeated. */
     fun repeat(): List<ProgressEvent> {
         val wrong = checkNotNull(pending) { "No plausibility dialog is open" }
@@ -88,6 +110,7 @@ class CaseSession(
     val tableStillFree: Boolean get() = countsTowardProgress && !tableOpened
 
     private fun confirm(symbols: List<String>): List<ProgressEvent> {
+        notUnderstood = false
         fieldIndex += 1
         finished = fieldIndex == fields.size
         return buildList {

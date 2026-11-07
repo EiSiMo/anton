@@ -46,9 +46,9 @@ The app chooses the next case itself, mixing ID cards, driving licences and plat
 ## Speaking and evaluation
 
 - The on-screen talk button and both volume keys are push-to-talk while a case is open.
-- Each field is one transmission.
+- Fields may be sent one per transmission or in one go. As soon as a field is complete it is confirmed and the next one opens, without releasing the key. The last field closes the case the same way. A short vibration confirms a field, because a sound would reach the open microphone.
 - A name may be said normally before it is spelled. Everything outside the recognizer vocabulary is ignored. If a spoken name is itself a spelling word, it is dropped when the rest of the transmission matches the field.
-- The transmission is evaluated on release. While it is open, the radio log shows what is being heard.
+- Anything still open is evaluated on release, so wrong words are reported then. While the transmission is open, the radio log shows what is being heard.
 - A transmission that stops before the field ends counts as not understood, because a recognizer miss must not cost the streak. A word after the end of the field is a wrong word.
 
 | Result | Reaction | Streak |

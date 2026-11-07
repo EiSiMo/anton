@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,8 +33,10 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -69,6 +72,11 @@ fun CaseScreen(model: AntonViewModel, onTalk: (Boolean) -> Unit) {
             is CaseDialog.Result, is CaseDialog.Certificate -> model.leaveCase()
             null -> model.requestLeaveCase()
         }
+    }
+    // Sounds would reach the open microphone, so a field confirmed mid-transmission is felt instead.
+    val haptics = LocalHapticFeedback.current
+    LaunchedEffect(ui.fieldIndex) {
+        if (ui.fieldIndex > 0) haptics.performHapticFeedback(HapticFeedbackType.Confirm)
     }
     val drill = ui.case as? Case.Drill
     val title = if (drill != null) {

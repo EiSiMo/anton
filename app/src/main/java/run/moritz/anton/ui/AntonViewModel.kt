@@ -6,6 +6,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import run.moritz.anton.AppContainer
 import run.moritz.anton.cases.Case
@@ -72,6 +74,9 @@ class AntonViewModel(private val container: AppContainer) : ViewModel() {
     private val evaluator = SpellingEvaluator(table)
     private var recognizer: SpeechRecognizer? = null
     private var session: CaseSession? = null
+    private var heardSoFar = ""
+    private var usedSymbols = 0
+    private var settling: Job? = null
 
     var screen by mutableStateOf(Screen.STATION)
         private set
@@ -139,6 +144,8 @@ class AntonViewModel(private val container: AppContainer) : ViewModel() {
     }
 
     private fun open(active: SpeechRecognizer, ui: CaseUi) {
+        usedSymbols = 0
+        heardSoFar = ""
         val opened = runCatching {
             active.startTransmission { heard ->
                 viewModelScope.launch { showHeard(heard) }
@@ -152,12 +159,49 @@ class AntonViewModel(private val container: AppContainer) : ViewModel() {
         }
     }
 
+    /** Words heard so far minus those that already went into confirmed fields. */
+    private fun openSymbols(): List<String> = vocabulary.decode(heardSoFar).drop(usedSymbols)
+
     private fun showHeard(heard: String) {
         val ui = caseUi ?: return
-        if (ui.phase == TransmissionPhase.SENDING) caseUi = ui.copy(sentSymbols = vocabulary.decode(heard))
+        if (ui.phase != TransmissionPhase.SENDING) return
+        heardSoFar = heard
+        val symbols = openSymbols()
+        caseUi = ui.copy(sentSymbols = symbols)
+        if (evaluator.symbolsCompleting(ui.field, symbols) != null && settling?.isActive != true) {
+            settling = viewModelScope.launch {
+                delay(SETTLE_MILLIS)
+                advanceWhileSending()
+            }
+        }
+    }
+
+    /** The speech model may still revise the last word, so a field only counts once it stayed complete briefly. */
+    private fun advanceWhileSending() {
+        val active = session ?: return
+        val ui = caseUi ?: return
+        if (ui.phase != TransmissionPhase.SENDING) return
+        val advance = active.advance(openSymbols())
+        if (advance.consumed == 0) return
+        usedSymbols += advance.consumed
+        caseUi = ui.copy(sentSymbols = openSymbols())
+        if (active.finished) closeFinishedCase()
+        apply(active, advance.events)
+    }
+
+    /** The last field is done, so the microphone closes even though the key may still be held. */
+    private fun closeFinishedCase() {
+        val microphone = recognizer ?: return
+        caseUi = caseUi?.copy(phase = TransmissionPhase.IDLE)
+        viewModelScope.launch {
+            runCatching { microphone.finishTransmission() }
+                .onFailure { Log.e(TAG, "Transmission failed", it) }
+            sounds.confirmed()
+        }
     }
 
     private fun close(active: SpeechRecognizer, ui: CaseUi) {
+        settling?.cancel()
         caseUi = ui.copy(phase = TransmissionPhase.EVALUATING)
         sounds.keyReleased()
         viewModelScope.launch {
@@ -170,19 +214,27 @@ class AntonViewModel(private val container: AppContainer) : ViewModel() {
         }
     }
 
+    /** Evaluates what was still open on release. Fields confirmed during the transmission are already done. */
     private fun evaluate(heard: String) {
-        val active = checkNotNull(session)
+        val active = session ?: return
         Log.d(TAG, "Heard \"$heard\" for field ${active.currentField?.kind}")
-        val symbols = vocabulary.decode(heard)
-        val events = active.transmit(symbols, heard)
+        heardSoFar = heard
+        val advance = active.advance(openSymbols())
+        usedSymbols += advance.consumed
+        val symbols = openSymbols()
+        val confirmedBefore = usedSymbols > 0
+        val nothingOpen = symbols.isEmpty() && confirmedBefore
+        val events =
+            advance.events + if (active.finished || nothingOpen) emptyList() else active.transmit(symbols, heard)
         val pending = active.pending
         when {
             pending != null -> sounds.rejected()
-            !active.notUnderstood -> sounds.confirmed()
+            advance.consumed > 0 && !active.notUnderstood -> sounds.confirmed()
         }
+        val confirmed = pending == null && !active.notUnderstood
         caseUi = caseUi?.copy(
             phase = TransmissionPhase.IDLE,
-            sentSymbols = if (pending == null && !active.notUnderstood) emptyList() else symbols,
+            sentSymbols = if (confirmed) emptyList() else symbols,
             notice = if (active.notUnderstood) LogNotice.NOT_UNDERSTOOD else LogNotice.NONE,
             dialog = pending?.let { CaseDialog.Plausibility(it) }
         )
@@ -306,5 +358,6 @@ class AntonViewModel(private val container: AppContainer) : ViewModel() {
 
     private companion object {
         const val TAG = "Anton"
+        const val SETTLE_MILLIS = 300L
     }
 }

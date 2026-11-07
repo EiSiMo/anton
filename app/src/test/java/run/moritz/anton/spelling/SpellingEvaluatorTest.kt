@@ -127,4 +127,17 @@ class SpellingEvaluatorTest {
         assertEquals("Berta", result.sentWord)
         assertEquals(null, result.expectedWord)
     }
+
+    @Test
+    fun `the leading symbols that complete a field are found while more is being said`() {
+        val field = surname("Ott")
+        assertEquals(3, evaluator.symbolsCompleting(field, listOf("O", "T", "T", "I", "D")))
+        assertEquals(null, evaluator.symbolsCompleting(field, listOf("O", "T")))
+        assertEquals(null, evaluator.symbolsCompleting(field, listOf("O", "B", "T")))
+    }
+
+    @Test
+    fun `a name said first belongs to the symbols that complete the field`() {
+        assertEquals(5, evaluator.symbolsCompleting(surname("Otto"), listOf("O", "O", "T", "T", "O", "I")))
+    }
 }

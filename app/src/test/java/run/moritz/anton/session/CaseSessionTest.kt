@@ -103,4 +103,32 @@ class CaseSessionTest {
         assertTrue(session.finished)
         assertEquals(listOf(ProgressEvent.Confirmed(ida)), events)
     }
+
+    @Test
+    fun `a completed field advances while the transmission goes on`() {
+        val session = session()
+        val advance = session.advance(ott + listOf("I"))
+        assertEquals(3, advance.consumed)
+        assertEquals(listOf(ProgressEvent.Confirmed(ott)), advance.events)
+        assertEquals(1, session.fieldIndex)
+    }
+
+    @Test
+    fun `several fields can complete in one go and finish the case`() {
+        val session = session()
+        val advance = session.advance(ott + ida)
+        assertEquals(6, advance.consumed)
+        assertTrue(session.finished)
+        assertEquals(ProgressEvent.CaseFinished(errorFree = true), advance.events.last())
+    }
+
+    @Test
+    fun `an unfinished field does not advance and costs nothing`() {
+        val session = session()
+        val advance = session.advance(listOf("O", "T"))
+        assertEquals(0, advance.consumed)
+        assertEquals(emptyList<ProgressEvent>(), advance.events)
+        assertFalse(session.notUnderstood)
+        assertEquals(0, session.fieldIndex)
+    }
 }

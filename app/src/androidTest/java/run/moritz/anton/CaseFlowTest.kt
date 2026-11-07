@@ -18,6 +18,7 @@ import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import androidx.test.runner.lifecycle.Stage
 import java.io.File
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -27,6 +28,8 @@ import run.moritz.anton.progress.Progress
 import run.moritz.anton.progress.Rank
 import run.moritz.anton.spelling.SpellingTable
 import run.moritz.anton.ui.AntonViewModel
+import run.moritz.anton.ui.LogNotice
+import run.moritz.anton.ui.TransmissionPhase
 
 /** Plays through the real screens with scripted speech and files a screenshot of each state. */
 @OptIn(ExperimentalTestApi::class)
@@ -101,6 +104,45 @@ class CaseFlowTest {
         screenshot("03_case_result")
         assertEquals(1, store.progress.streak)
         assertEquals(1, store.progress.casesTowardNextRank)
+    }
+
+    @Test
+    fun aWholeCaseCanBeSpelledWithoutLettingGo() {
+        launch()
+        tag("next_case").performClick()
+        val words = currentFields().joinToString(" ", transform = ::spoken)
+        recognizer.nextHeard = ""
+        tag("talk").performTouchInput { down(center) }
+        compose.waitForIdle()
+        recognizer.hear(words)
+        compose.waitUntil(5_000) { store.progress.casesCompleted == 1 }
+        tag("result").assertIsDisplayed()
+        tag("talk").performTouchInput { up() }
+        compose.waitForIdle()
+        tag("result").assertIsDisplayed()
+        assertEquals(1, store.progress.streak)
+    }
+
+    @Test
+    fun fieldsAdvanceWhileHoldingAndLettingGoAfterwardsIsNoError() {
+        launch()
+        tag("next_case").performClick()
+        var fields = currentFields()
+        while (fields.size < 3) {
+            model().let { model -> instrumentation.runOnMainSync { model.startNextCase() } }
+            fields = currentFields()
+        }
+        recognizer.nextHeard = ""
+        tag("talk").performTouchInput { down(center) }
+        compose.waitForIdle()
+        recognizer.hear(spoken(fields[0]))
+        compose.waitUntil(5_000) { model().caseUi!!.fieldIndex == 1 }
+        recognizer.hear(spoken(fields[0]) + " " + spoken(fields[1]))
+        compose.waitUntil(5_000) { model().caseUi!!.fieldIndex == 2 }
+        tag("talk").performTouchInput { up() }
+        compose.waitUntil(5_000) { model().caseUi!!.phase == TransmissionPhase.IDLE }
+        assertNotEquals(LogNotice.NOT_UNDERSTOOD, model().caseUi!!.notice)
+        assertEquals(2, model().caseUi!!.fieldIndex)
     }
 
     @Test

@@ -15,8 +15,18 @@ import run.moritz.anton.spelling.SpellingTable
 /** A recognizer that hears what the test says it heard. */
 class ScriptedRecognizer : SpeechRecognizer {
     var nextHeard = ""
+    private var listener: (String) -> Unit = {}
 
-    override fun startTransmission(onPartial: (String) -> Unit) = onPartial(nextHeard)
+    override fun startTransmission(onPartial: (String) -> Unit) {
+        listener = onPartial
+        onPartial(nextHeard)
+    }
+
+    /** Hears more while the transmission stays open. */
+    fun hear(heard: String) {
+        nextHeard = heard
+        listener(heard)
+    }
 
     override suspend fun finishTransmission(): String = nextHeard
 }
