@@ -1,7 +1,7 @@
 # AGENTS.md
 
 ## Goal
-A native Android app in Kotlin for practicing radio spelling alphabets by speaking them, covering the classic German spelling alphabet (Anton, Berta, Cäsar, Dora, ...), NATO and other alphabets, with on-device speech recognition through a local Vosk model.
+A native Android app in Kotlin that trains police officers to spell correctly over the radio by speaking, starting with the classic German spelling alphabet (Anton, Berta, Cäsar, Dora, ...), with on-device speech recognition through a local Vosk model. See `docs/spec.md`.
 
 ## Principles
 - Maintainability, modularity and best practices come first. Code is not cheap.
