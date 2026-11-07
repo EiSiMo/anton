@@ -15,12 +15,24 @@ class RecognitionVocabularyTest {
 
     @Test
     fun `decodes phrases that stand in for words missing from the model`() {
-        assertEquals(listOf("A", "X", "ß"), vocabulary.decode("anton san tippe es zett"))
+        assertEquals(listOf("A", "X", "ß"), vocabulary.decode("anton sankt tippe es zett"))
     }
 
     @Test
     fun `treats zwo as a digit and zwei as a distinct wrong word`() {
         assertEquals(listOf("2", "zwei"), vocabulary.decode("zwo zwei"))
+    }
+
+    @Test
+    fun `hears a name instead of forcing it onto a spelling word`() {
+        assertEquals(listOf("A", "Siegfried"), vocabulary.decode("anton siegfried"))
+        assertTrue("siegfried" in vocabulary.grammar)
+    }
+
+    @Test
+    fun `no wrong word hides a spelling word or digit`() {
+        val correct = SpellingTable.classicGerman.entries.map { it.word.lowercase() }
+        assertEquals(emptyList<String>(), WRONG_WORDS.map { it.lowercase() }.filter { it in correct })
     }
 
     @Test

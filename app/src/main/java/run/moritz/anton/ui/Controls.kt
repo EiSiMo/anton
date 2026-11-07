@@ -328,8 +328,8 @@ fun ClassicDialog(title: String, modifier: Modifier = Modifier, content: @Compos
 @Composable
 fun DialogButtons(primary: String, onPrimary: () -> Unit, secondary: String, onSecondary: () -> Unit) {
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-        ClassicButton(primary, onPrimary, Modifier.weight(1f), primary = true)
         ClassicButton(secondary, onSecondary, Modifier.weight(1f))
+        ClassicButton(primary, onPrimary, Modifier.weight(1f), primary = true)
     }
 }
 

@@ -5,9 +5,9 @@ import run.moritz.anton.spelling.SpellingTable
 /**
  * Translates between the spelling table and what the speech model can hear.
  *
- * Words missing from the model are represented by phrases of similar sounding known words. Words that are
- * deliberately wrong, such as "zwei" instead of "zwo" or "Bindestrich" instead of "Trennung", stay in the grammar so they are heard rather than
- * forced onto the nearest correct word.
+ * Words missing from the model are represented by phrases of similar sounding known words. [WRONG_WORDS], such as
+ * "zwei" instead of "zwo" or "Siegfried" instead of "Samuel", stay in the grammar so they are heard rather than forced
+ * onto the nearest correct word. They decode to themselves, which no field can match.
  */
 class RecognitionVocabulary(table: SpellingTable) {
     private val phraseToSymbol: Map<String, String> = buildMap {
@@ -16,7 +16,7 @@ class RecognitionVocabulary(table: SpellingTable) {
             val phrases = STAND_INS[word] ?: listOf(word)
             phrases.forEach { put(it, entry.symbol) }
         }
-        WRONG_WORDS.forEach { put(it, it) }
+        WRONG_WORDS.forEach { put(it.lowercase(), it) }
     }
 
     private val longestPhrase = phraseToSymbol.keys.maxOf { it.split(" ").size }
@@ -45,9 +45,8 @@ class RecognitionVocabulary(table: SpellingTable) {
     private companion object {
         const val UNKNOWN = "[unk]"
         val STAND_INS = mapOf(
-            "xanthippe" to listOf("san tippe", "sankt tippe", "xanten tippe", "kanten tippe"),
+            "xanthippe" to listOf("sankt tippe", "xanten tippe", "kanten tippe"),
             "eszett" to listOf("es zett")
         )
-        val WRONG_WORDS = listOf("zwei", "bindestrich")
     }
 }

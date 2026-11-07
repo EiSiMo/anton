@@ -93,8 +93,18 @@ internal fun DocumentValue(text: String, modifier: Modifier, style: TextStyle, a
     } else {
         Modifier.padding(horizontal = u * 0.6f)
     }
-    Label(text, modifier.then(mark), style, maxLines = 1)
+    val lineHeight = with(LocalDensity.current) { style.fontSize.toDp() } * VALUE_LINE_HEIGHT
+    val raised = (lineHeight - with(LocalDensity.current) { style.lineHeight.toDp() }) / 2
+    Label(
+        text,
+        modifier.offset(y = -raised).then(mark),
+        style.copy(lineHeight = style.fontSize * VALUE_LINE_HEIGHT),
+        maxLines = 1
+    )
 }
+
+/** Tall enough for the dots of capital umlauts, which would otherwise be cut off by the marked box. */
+private const val VALUE_LINE_HEIGHT = 1.4f
 
 /** The blue field with the ring of stars and a country mark. */
 @Composable

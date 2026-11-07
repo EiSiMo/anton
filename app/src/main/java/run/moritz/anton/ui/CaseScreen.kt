@@ -61,6 +61,7 @@ import run.moritz.anton.spelling.Evaluation
 import run.moritz.anton.spelling.SpellingTable
 
 private const val TILES_PER_ROW = 11
+private const val WRONG_WORD_MARK = "?"
 
 @Composable
 fun CaseScreen(model: AntonViewModel, onTalk: (Boolean) -> Unit) {
@@ -180,7 +181,7 @@ private fun RadioLog(ui: CaseUi, table: SpellingTable) {
             Modifier.fillMaxWidth().background(Classic.Window).raised().padding(10.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            Tiles(ui)
+            Tiles(ui, table)
             LogLine(ui, table)
         }
     }
@@ -221,10 +222,11 @@ private fun FieldTab(label: String, active: Boolean, done: Boolean, compact: Boo
 }
 
 @Composable
-private fun Tiles(ui: CaseUi) {
+private fun Tiles(ui: CaseUi, table: SpellingTable) {
     if (ui.finished) return
     val target = printed(ui.field.spoken).toList()
-    val sent = printed(ui.sentSymbols.joinToString("")).toList()
+    val known = table.entries.map { it.symbol }
+    val sent = printed(ui.sentSymbols.joinToString("") { if (it in known) it else WRONG_WORD_MARK }).toList()
     Column(Modifier.testTag("tiles"), verticalArrangement = Arrangement.spacedBy(3.dp)) {
         target.chunked(TILES_PER_ROW).forEachIndexed { row, cells ->
             Row(horizontalArrangement = Arrangement.spacedBy(3.dp)) {

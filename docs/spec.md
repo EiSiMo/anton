@@ -119,7 +119,7 @@ The look is deliberately that of classic Windows government software: grey windo
 
 ### Recognizer vocabulary
 
-Vosk runs with a fixed grammar of spelling words, digits and `[unk]`. "Xanthippe" and "Eszett" are not in the model vocabulary, so they use phrases of known words that are mapped back to the letter. The exact phrases are confirmed by testing on a real device.
+Vosk runs with a fixed grammar of spelling words, digits, wrong words and `[unk]`. Wrong words are what a player might say instead: first names, other spelling tables, number words. Without them Vosk forces such speech onto the nearest correct word, so "Siegfried" would pass as a digit. Each word in the grammar costs accuracy on the correct words, so the list leaves out names that sound like a spelling word and is chosen by measurement. "Xanthippe" and "Eszett" are not in the model vocabulary, so they use phrases of known words that are mapped back to the letter. The exact phrases are confirmed by testing on a real device.
 
 ## Release plan
 
