@@ -1,10 +1,197 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Anton</string>
+
+    <!-- General -->
+    <string name="status_ready">Bereit</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="next_case">Nächster Vorgang</string>
+    <string name="to_station">Zur Wache</string>
+    <string name="spelling_table">Buchstabiertafel</string>
+    <string name="settings">Einstellungen</string>
+
+    <!-- First start -->
+    <string name="first_start_title">Anton - Einrichtung</string>
+    <string name="first_start_heading">Mikrofon freigeben</string>
+    <string name="first_start_body">Anton hört zu, solange die Sprechtaste gedrückt ist. Die Erkennung läuft vollständig auf diesem Gerät. Es verlässt nichts das Telefon.</string>
+    <string name="first_start_allow">Zulassen</string>
+    <string name="first_start_denied">Ohne Mikrofon kann Anton nicht hören. Bitte gib es in den Systemeinstellungen frei.</string>
+    <string name="first_start_open_settings">Systemeinstellungen</string>
+    <string name="model_loading_title">Sprachmodell</string>
+    <string name="model_loading">Das Sprachmodell wird eingerichtet …</string>
+    <string name="model_failed">Das Sprachmodell konnte nicht geladen werden: %1$s</string>
+
+    <!-- Station -->
+    <string name="station_title">ANTON - Personalakte</string>
+    <string name="master_data">Stammdaten</string>
+    <string name="rank_label">Dienstgrad:</string>
+    <string name="next_rank_label">Nächster Rang:</string>
+    <string name="highest_rank">Höchster Dienstgrad erreicht</string>
+    <string name="work_status">Bearbeitungsstand</string>
+    <string name="cases_toward_rank">Fehlerfrei bis zur Beförderung: %1$d von %2$d</string>
+    <string name="cases_completed">Erledigte Vorgänge:</string>
+    <string name="streak_label">Fehlerfrei in Serie:</string>
+    <string name="best_streak">Beste Serie:</string>
+    <string name="weak_letters">Wiedervorlage</string>
+    <string name="weak_letters_empty">Keine unsicheren Buchstaben.</string>
+    <string name="status_streak">Serie: %1$d</string>
+    <string name="insignia_description">Schulterstück: %1$s</string>
+
+    <!-- Case -->
+    <string name="case_title">Vorgang %1$d [Bearbeiten]</string>
+    <string name="drill_title">Übung %1$s [Bearbeiten]</string>
+    <string name="close_case">Vorgang schließen</string>
+    <string name="group_plate">Kennzeichen</string>
+    <string name="group_drill">Übungsblatt</string>
+    <string name="field_surname">Nachname</string>
+    <string name="field_birth_date">Geburtsdatum</string>
+    <string name="field_first_name">Vorname</string>
+    <string name="field_plate">Kennzeichen</string>
+    <string name="field_drill">Blatt %1$d</string>
     <string name="talk">Sprechen</string>
-    <string name="model_loading">Sprachmodell wird geladen …</string>
-    <string name="microphone_denied">Ohne Mikrofon kann Anton nicht hören.</string>
-    <string name="trial_progress">Test %1$d von %2$d, richtig: %3$d</string>
-    <string name="trial_finished">Fertig: %1$d von %2$d richtig erkannt.</string>
-    <string name="last_heard">Gehört: %1$s</string>
+    <string name="talk_hint">Gedrückt halten oder Lautstärketaste</string>
+    <string name="talk_hint_no_keys">Gedrückt halten</string>
+    <string name="talk_sending">Sendet …</string>
+    <string name="talk_evaluating">Wertet aus …</string>
+    <string name="status_sending">Sendet …</string>
+    <string name="status_evaluating">Wertet aus …</string>
+    <string name="status_field">Feld %1$d/%2$d</string>
+    <string name="status_table">Tafel</string>
+    <string name="log_waiting">%1$s senden</string>
+    <string name="log_confirmed">Feld bestätigt.</string>
+    <string name="log_not_understood">Nicht verstanden. Bitte wiederholen.</string>
+    <string name="status_not_understood">Nicht verstanden</string>
+    <string name="log_microphone_failed">Mikrofon nicht verfügbar.</string>
+
+    <!-- Plausibility dialog -->
+    <string name="plausibility_title">Plausibilitätsprüfung</string>
+    <string name="plausibility_heading">Abweichung im Feld %1$s</string>
+    <string name="plausibility_position">Stelle %1$d von %2$d wurde nicht korrekt übermittelt.</string>
+    <string name="plausibility_extra">Der Funkspruch ging nach dem Ende des Feldes weiter.</string>
+    <string name="plausibility_sent">Übermittelt:</string>
+    <string name="plausibility_expected">Soll:</string>
+    <string name="plausibility_end_of_field">Ende des Feldes</string>
+    <string name="repeat">Wiederholen</string>
+    <string name="that_was_right">Das war richtig</string>
+
+    <!-- Result -->
+    <string name="result_title">Vorgang abgeschlossen</string>
+    <string name="result_error_free">Fehlerfrei übermittelt.</string>
+    <string name="result_with_errors">Abgeschlossen, aber nicht fehlerfrei. Die Serie beginnt neu.</string>
+    <string name="result_streak">Serie:</string>
+    <string name="result_until_rank">Bis %1$s: noch %2$d</string>
+    <string name="drill_result_title">Übung abgeschlossen</string>
+    <string name="drill_result_body">Die Sicherheit bei %1$s wurde aktualisiert.</string>
+    <string name="drill_again">Noch einmal</string>
+    <string name="to_table">Zur Tafel</string>
+
+    <!-- Warnings -->
+    <string name="table_warning_title">Nachschlagen</string>
+    <string name="table_warning_body">Wird die Tafel jetzt geöffnet, zählt dieser Vorgang nicht mehr als fehlerfrei und die Serie endet.</string>
+    <string name="table_warning_confirm">Tafel öffnen</string>
+    <string name="leave_warning_title">Vorgang schließen</string>
+    <string name="leave_warning_body">Der Vorgang wird nicht gewertet. Bisher Übermitteltes geht verloren.</string>
+    <string name="leave_warning_confirm">Schließen</string>
+
+    <!-- Certificate -->
+    <string name="certificate_title">Ernennung</string>
+    <string name="certificate_heading">URKUNDE</string>
+    <string name="certificate_body_male">Hiermit werden Sie ernannt zum</string>
+    <string name="certificate_body_female">Hiermit werden Sie ernannt zur</string>
+    <string name="certificate_date">Berlin, den %1$s</string>
+    <string name="unlock_traps">Neu freigeschaltet: Schreibvarianten, Umlaute und Doppelnamen</string>
+    <string name="unlock_international">Neu freigeschaltet: internationale Namen</string>
+    <string name="unlock_rare">Neu freigeschaltet: lange Namen und seltene Buchstaben</string>
+    <string name="unlock_more">Die Ablage enthält ab sofort mehr schwere Vorgänge.</string>
+
+    <!-- Spelling table -->
+    <string name="table_close">Tafel schließen</string>
+    <string name="table_column_letter">Bst.</string>
+    <string name="table_column_word">Wort</string>
+    <string name="table_column_mastery">Sicherheit</string>
+    <string name="table_status">%1$d Einträge · Zeile antippen für Übung</string>
+    <string name="table_status_case">%1$d Einträge · Vorgang läuft</string>
+    <string name="table_row_description">%1$s wie %2$s, Sicherheit %3$d von 5</string>
+    <string name="scroll_up">Nach oben blättern</string>
+    <string name="scroll_down">Nach unten blättern</string>
+
+    <!-- Settings -->
+    <string name="settings_close">Einstellungen schließen</string>
+    <string name="settings_group_radio">Funkgerät</string>
+    <string name="settings_volume_keys">Lautstärketasten als Sprechtaste</string>
+    <string name="settings_sounds">Funkgeräusche</string>
+    <string name="settings_group_title">Amtsbezeichnung</string>
+    <string name="settings_title_male">Polizeimeister</string>
+    <string name="settings_title_female">Polizeimeisterin</string>
+    <string name="settings_group_data">Daten</string>
+    <string name="settings_reset">Fortschritt zurücksetzen</string>
+    <string name="settings_about">Über Anton</string>
+    <string name="reset_title">Fortschritt zurücksetzen</string>
+    <string name="reset_body">Dienstgrad, Serie und Sicherheit werden gelöscht. Das kann nicht rückgängig gemacht werden.</string>
+    <string name="reset_confirm">Zurücksetzen</string>
+    <string name="about_title">Über Anton</string>
+    <string name="about_version">Version %1$s</string>
+    <string name="about_body">Trainiert das Buchstabieren für den Funkverkehr. Alle Personen und Kennzeichen sind frei erfunden.</string>
+    <string name="about_credits">Spracherkennung: Vosk und vosk-model-small-de-0.15 (Apache 2.0). Schriften: Wine Tahoma (LGPL 2.1), Liberation (OFL 1.1).</string>
+
+    <!-- ID card, printed like the real document -->
+    <string name="card_state">BUNDESREPUBLIK DEUTSCHLAND</string>
+    <string name="card_state_translation">FEDERAL REPUBLIC OF GERMANY / RÉPUBLIQUE FÉDÉRALE D\'ALLEMAGNE</string>
+    <string name="card_type">PERSONALAUSWEIS</string>
+    <string name="card_type_translation">IDENTITY CARD / CARTE D\'IDENTITÉ</string>
+    <string name="card_surname">Name / Surname / Nom</string>
+    <string name="card_first_name">Vornamen / Given names / Prénoms</string>
+    <string name="card_birth_date">Geburtstag / Date of birth</string>
+    <string name="card_nationality">Staatsangehörigkeit / Nationality</string>
+    <string name="card_nationality_value">DEUTSCH</string>
+    <string name="card_birth_place">Geburtsort / Place of birth</string>
+    <string name="card_expiry">Gültig bis / Date of expiry</string>
+    <string name="card_signature">Unterschrift / Signature</string>
+    <string name="card_description">Personalausweis von %1$s %2$s, geboren am %3$s</string>
+    <string name="plate_country">D</string>
+    <string name="plate_description">Kennzeichen %1$s</string>
+
+    <string-array name="rank_titles_male">
+        <item>In Ausbildung</item>
+        <item>Polizeimeister</item>
+        <item>Polizeiobermeister</item>
+        <item>Polizeikommissar-Anwärter</item>
+        <item>Polizeikommissar</item>
+        <item>Polizeioberkommissar</item>
+        <item>Polizeihauptkommissar</item>
+        <item>Polizeihauptkommissar A12</item>
+        <item>Erster Polizeihauptkommissar</item>
+        <item>Erster Polizeihauptkommissar mit Amtszulage</item>
+        <item>Polizeireferendar</item>
+        <item>Polizeirat</item>
+        <item>Polizeioberrat</item>
+        <item>Polizeidirektor</item>
+        <item>Leitender Polizeidirektor</item>
+        <item>Direktor bei der Polizei Berlin</item>
+        <item>Erster Direktor bei der Polizei Berlin</item>
+        <item>Polizeivizepräsident</item>
+        <item>Polizeipräsident</item>
+    </string-array>
+    <string-array name="rank_titles_female">
+        <item>In Ausbildung</item>
+        <item>Polizeimeisterin</item>
+        <item>Polizeiobermeisterin</item>
+        <item>Polizeikommissar-Anwärterin</item>
+        <item>Polizeikommissarin</item>
+        <item>Polizeioberkommissarin</item>
+        <item>Polizeihauptkommissarin</item>
+        <item>Polizeihauptkommissarin A12</item>
+        <item>Erste Polizeihauptkommissarin</item>
+        <item>Erste Polizeihauptkommissarin mit Amtszulage</item>
+        <item>Polizeireferendarin</item>
+        <item>Polizeirätin</item>
+        <item>Polizeioberrätin</item>
+        <item>Polizeidirektorin</item>
+        <item>Leitende Polizeidirektorin</item>
+        <item>Direktorin bei der Polizei Berlin</item>
+        <item>Erste Direktorin bei der Polizei Berlin</item>
+        <item>Polizeivizepräsidentin</item>
+        <item>Polizeipräsidentin</item>
+    </string-array>
 </resources>

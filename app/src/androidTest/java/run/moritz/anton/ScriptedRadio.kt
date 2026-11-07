@@ -1,0 +1,94 @@
+package run.moritz.anton
+
+import androidx.test.platform.app.InstrumentationRegistry
+import java.time.LocalDate
+import kotlin.random.Random
+import run.moritz.anton.cases.Case
+import run.moritz.anton.cases.CaseGenerator
+import run.moritz.anton.cases.Person
+import run.moritz.anton.cases.Sex
+import run.moritz.anton.progress.Progress
+import run.moritz.anton.progress.ProgressStore
+import run.moritz.anton.progress.Rank
+import run.moritz.anton.recognition.SpeechRecognizer
+import run.moritz.anton.settings.Settings
+import run.moritz.anton.settings.SettingsStore
+import run.moritz.anton.sound.SilentRadio
+import run.moritz.anton.spelling.SpellingTable
+
+/** A recognizer that hears what the test says it heard. */
+class ScriptedRecognizer : SpeechRecognizer {
+    var nextHeard = ""
+
+    override fun startTransmission(onPartial: (String) -> Unit) = onPartial(nextHeard)
+
+    override suspend fun finishTransmission(): String = nextHeard
+}
+
+class MemoryProgressStore(var progress: Progress = Progress()) : ProgressStore {
+    val misrecognitions = mutableListOf<Pair<String?, String>>()
+
+    override suspend fun load() = progress
+
+    override suspend fun save(progress: Progress) {
+        this.progress = progress
+    }
+
+    override suspend fun recordMisrecognition(expected: String?, heard: String) {
+        misrecognitions += expected to heard
+    }
+
+    override suspend fun reset() {
+        progress = Progress()
+    }
+}
+
+class MemorySettingsStore(private var settings: Settings = Settings()) : SettingsStore {
+    override fun load() = settings
+
+    override fun save(settings: Settings) {
+        this.settings = settings
+    }
+}
+
+val kowalczyk = Case.IdCard(
+    person = Person("Kowalczyk", "Jürgen", Sex.MALE, LocalDate.of(1987, 12, 3), "HAMBURG"),
+    expiryDate = LocalDate.of(2031, 5, 14),
+    documentNumber = "L01X00T47",
+    accessNumber = "314159",
+    portraitSeed = 7
+)
+
+/** Installs a container with scripted speech, so a test can play through real screens. */
+fun installScriptedApp(
+    recognizer: ScriptedRecognizer,
+    store: ProgressStore,
+    settings: SettingsStore = MemorySettingsStore(),
+    seed: Int = 42
+) {
+    val table = SpellingTable.classicGerman
+    val application = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as AntonApplication
+    application.container = AppContainer(
+        table = table,
+        progressStore = store,
+        settingsStore = settings,
+        sounds = SilentRadio,
+        generator = CaseGenerator(table, Random(seed)),
+        createRecognizer = { recognizer }
+    )
+}
+
+/** What a player says for a text, as the speech model would write it. */
+fun spoken(text: String): String {
+    val table = SpellingTable.classicGerman
+    return text.filter { it.isLetterOrDigit() || it == '-' }.map { char ->
+        val entry = table.entries.first { it.symbol.equals(char.toString(), ignoreCase = true) }
+        when (entry.word) {
+            "Xanthippe" -> "san tippe"
+            "Eszett" -> "es zett"
+            else -> entry.word.lowercase()
+        }
+    }.joinToString(" ")
+}
+
+val topRank get() = Rank.entries.last()

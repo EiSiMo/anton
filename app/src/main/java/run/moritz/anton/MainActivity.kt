@@ -1,180 +1,97 @@
 package run.moritz.anton
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
-import android.util.Log
+import android.provider.Settings
+import android.view.HapticFeedbackConstants
 import android.view.KeyEvent
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.foundation.text.BasicText
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.launch
-import run.moritz.anton.recognition.RecognitionVocabulary
-import run.moritz.anton.recognition.SpeechRecognizer
-import run.moritz.anton.recognition.TrialPrompt
-import run.moritz.anton.recognition.VoskSpeechRecognizer
-import run.moritz.anton.recognition.recognitionTrial
-import run.moritz.anton.spelling.SpellingTable
+import androidx.activity.viewModels
+import androidx.annotation.VisibleForTesting
+import androidx.compose.ui.graphics.toArgb
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import run.moritz.anton.ui.AntonApp
+import run.moritz.anton.ui.AntonViewModel
+import run.moritz.anton.ui.Classic
 
-private const val TAG = "AntonRecognitionTrial"
-
-/** Measures recognition quality on a real device. Results go to logcat under [TAG]. */
 class MainActivity : ComponentActivity() {
-    private val vocabulary = RecognitionVocabulary(SpellingTable.classicGerman)
-    private val prompts: List<TrialPrompt> = recognitionTrial(SpellingTable.classicGerman)
-
-    private var recognizer by mutableStateOf<SpeechRecognizer?>(null)
-    private var failure by mutableStateOf<String?>(null)
-    private var promptIndex by mutableIntStateOf(0)
-    private var correct by mutableIntStateOf(0)
-    private var transmitting by mutableStateOf(false)
-    private var lastHeard by mutableStateOf("")
-    private var evaluating = false
-
-    private val requestMicrophone = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-        if (granted) loadRecognizer() else failure = getString(R.string.microphone_denied)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
-            loadRecognizer()
-        } else {
-            requestMicrophone.launch(Manifest.permission.RECORD_AUDIO)
-        }
-        setContent {
-            TrialScreen(
-                prompt = prompts.getOrNull(promptIndex),
-                position = promptIndex + 1,
-                total = prompts.size,
-                correct = correct,
-                ready = recognizer != null,
-                transmitting = transmitting,
-                lastHeard = lastHeard,
-                failure = failure,
-                onTalkChanged = ::setTalking,
-            )
-        }
-    }
-
-    override fun dispatchKeyEvent(event: KeyEvent): Boolean {
-        if (event.keyCode != KeyEvent.KEYCODE_VOLUME_DOWN && event.keyCode != KeyEvent.KEYCODE_VOLUME_UP) {
-            return super.dispatchKeyEvent(event)
-        }
-        when (event.action) {
-            KeyEvent.ACTION_DOWN -> if (event.repeatCount == 0) setTalking(true)
-            KeyEvent.ACTION_UP -> setTalking(false)
-        }
-        return true
-    }
-
-    private fun loadRecognizer() {
-        lifecycleScope.launch {
-            runCatching { VoskSpeechRecognizer.create(this@MainActivity, vocabulary) }
-                .onSuccess { recognizer = it }
-                .onFailure {
-                    Log.e(TAG, "Speech model could not be loaded", it)
-                    failure = it.message
-                }
-        }
-    }
-
-    private fun setTalking(talking: Boolean) {
-        val active = recognizer ?: return
-        val prompt = prompts.getOrNull(promptIndex) ?: return
-        if (talking && !transmitting && !evaluating) {
-            active.startTransmission()
-            transmitting = true
-        } else if (!talking && transmitting) {
-            transmitting = false
-            evaluating = true
-            lifecycleScope.launch {
-                val heard = active.finishTransmission()
-                val symbols = vocabulary.decode(heard)
-                val isCorrect = symbols == prompt.expected
-                Log.i(TAG, "ok=$isCorrect expected=${prompt.expected} decoded=$symbols heard=\"$heard\"")
-                if (isCorrect) correct += 1
-                lastHeard = heard
-                promptIndex += 1
-                evaluating = false
-                if (promptIndex == prompts.size) Log.i(TAG, "finished correct=$correct total=${prompts.size}")
+    private val model: AntonViewModel by viewModels {
+        object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                val application = application as AntonApplication
+                return AntonViewModel(checkNotNull(application.container)) as T
             }
         }
     }
-}
 
-@Composable
-private fun TrialScreen(
-    prompt: TrialPrompt?,
-    position: Int,
-    total: Int,
-    correct: Int,
-    ready: Boolean,
-    transmitting: Boolean,
-    lastHeard: String,
-    failure: String?,
-    onTalkChanged: (Boolean) -> Unit,
-) {
-    Column(
-        modifier = Modifier.fillMaxSize().background(Color(0xFFD4D0C8)).safeDrawingPadding().padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
-        BasicText(stringResource(R.string.trial_progress, minOf(position, total), total, correct), style = LABEL)
-        when {
-            failure != null -> BasicText(failure, style = PROMPT)
-            !ready -> BasicText(stringResource(R.string.model_loading), style = PROMPT)
-            prompt == null -> BasicText(stringResource(R.string.trial_finished, correct, total), style = PROMPT)
-            else -> BasicText(prompt.text, style = PROMPT)
-        }
-        BasicText(stringResource(R.string.last_heard, lastHeard), style = LABEL, modifier = Modifier.weight(1f))
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(160.dp)
-                .background(if (transmitting) Color(0xFF0A246A) else Color(0xFFECE9D8))
-                .pointerInput(Unit) {
-                    detectTapGestures(
-                        onPress = {
-                            onTalkChanged(true)
-                            tryAwaitRelease()
-                            onTalkChanged(false)
-                        },
-                    )
-                },
-            contentAlignment = Alignment.Center,
-        ) {
-            BasicText(
-                stringResource(R.string.talk),
-                style = PROMPT.copy(color = if (transmitting) Color.White else Color.Black),
+    @get:VisibleForTesting
+    val testModel: AntonViewModel get() = model
+
+    private val requestMicrophone = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        if (granted) model.onMicrophoneGranted() else model.onMicrophoneDenied()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.dark(Classic.Title.toArgb()),
+            navigationBarStyle = SystemBarStyle.light(Classic.Window.toArgb(), Classic.Window.toArgb())
+        )
+        super.onCreate(savedInstanceState)
+        setContent {
+            AntonApp(
+                model = model,
+                onTalk = ::talk,
+                onAllowMicrophone = { requestMicrophone.launch(Manifest.permission.RECORD_AUDIO) },
+                onOpenSystemSettings = ::openSystemSettings
             )
         }
     }
-}
 
-private val LABEL = TextStyle(fontSize = 16.sp, color = Color.Black)
-private val PROMPT = TextStyle(fontSize = 26.sp, color = Color.Black)
+    override fun onResume() {
+        super.onResume()
+        val granted = checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
+        if (granted) model.onMicrophoneGranted()
+    }
+
+    /** Leaving the app must never keep the microphone open. */
+    override fun onStop() {
+        model.talk(false)
+        super.onStop()
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        if (!isTalkKey(keyCode)) return super.onKeyDown(keyCode, event)
+        if (event.repeatCount == 0) talk(true)
+        return true
+    }
+
+    override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
+        if (!isTalkKey(keyCode)) return super.onKeyUp(keyCode, event)
+        talk(false)
+        return true
+    }
+
+    private fun isTalkKey(keyCode: Int): Boolean {
+        val volumeKey = keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP
+        return volumeKey && model.capturesVolumeKeys
+    }
+
+    private fun talk(pressed: Boolean) {
+        if (pressed) window.decorView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+        model.talk(pressed)
+    }
+
+    private fun openSystemSettings() {
+        val uri = Uri.fromParts("package", packageName, null)
+        startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, uri))
+    }
+}

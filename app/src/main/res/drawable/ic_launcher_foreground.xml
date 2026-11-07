@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- A small program window with the letter A. -->
+    <path android:fillColor="#FFFFFF" android:pathData="M28,30h52v50h-52z" />
+    <path android:fillColor="#404040" android:pathData="M78,32h2v48h-50v-2h48z" />
+    <path android:fillColor="#D4D0C8" android:pathData="M30,32h48v46h-48z" />
+    <path android:fillColor="#0A246A" android:pathData="M32,34h44v9h-44z" />
+    <path android:fillColor="#D4D0C8" android:pathData="M68,36h6v5h-6z" />
+    <path android:fillColor="#FFFFFF" android:pathData="M36,46h36v29h-36z" />
+    <path android:fillColor="#0A246A" android:pathData="M51,49h6l9,23h-6l-1.8,-5h-9.4l-1.8,5h-6zM49.6,62.5h6.8l-3.4,-9.5z" />
+</vector>
