@@ -46,7 +46,7 @@ class RecognitionVocabulary(table: SpellingTable) {
         const val UNKNOWN = "[unk]"
         val STAND_INS = mapOf(
             "xanthippe" to listOf("san tippe", "sankt tippe", "xanten tippe", "kanten tippe"),
-            "eszett" to listOf("es zett"),
+            "eszett" to listOf("es zett")
         )
         val WRONG_WORDS = listOf("zwei")
     }

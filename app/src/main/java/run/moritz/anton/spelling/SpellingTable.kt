@@ -16,13 +16,13 @@ class SpellingTable(val letters: List<SpellingEntry>, val digits: List<SpellingE
                 "N" to "Nordpol", "O" to "Otto", "Ö" to "Ökonom", "P" to "Paula", "Q" to "Quelle",
                 "R" to "Richard", "S" to "Samuel", "Sch" to "Schule", "T" to "Theodor", "U" to "Ulrich",
                 "Ü" to "Übermut", "V" to "Viktor", "W" to "Wilhelm", "X" to "Xanthippe", "Y" to "Ypsilon",
-                "Z" to "Zacharias", "ß" to "Eszett",
+                "Z" to "Zacharias", "ß" to "Eszett"
             ).toEntries(),
             digits = listOf(
                 "0" to "null", "1" to "eins", "2" to "zwo", "3" to "drei", "4" to "vier",
-                "5" to "fünf", "6" to "sechs", "7" to "sieben", "8" to "acht", "9" to "neun",
+                "5" to "fünf", "6" to "sechs", "7" to "sieben", "8" to "acht", "9" to "neun"
             ).toEntries(),
-            signs = listOf("-" to "Bindestrich").toEntries(),
+            signs = listOf("-" to "Bindestrich").toEntries()
         )
 
         private fun List<Pair<String, String>>.toEntries() = map { (symbol, word) -> SpellingEntry(symbol, word) }
