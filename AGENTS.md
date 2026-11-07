@@ -19,6 +19,13 @@ A native Android app in Kotlin that trains police officers to spell correctly ov
 - Once the stack is chosen, set up pre-commit hooks for formatter, linter, type checks and tests. Never bypass them.
 - Commit and push autonomously after each meaningful green step. Use Conventional Commits.
 
+## Stack & Commands
+- Kotlin, Jetpack Compose, Gradle with version catalog (`gradle/libs.versions.toml`), Vosk. JDK 17 and Android SDK 37.
+- Test: `./gradlew :app:testDebugUnitTest`
+- Lint: `./gradlew :app:lintDebug`
+- Build: `./gradlew :app:assembleDebug`
+- Install on device: `adb install -r -g app/build/outputs/apk/debug/app-debug.apk`
+
 ## Conventions
 - Code, identifiers, comments, strings and commit messages in English. User-facing text lives in localization resources, never hardcoded.
 - Fail loudly: handle errors or propagate them with context, never swallow them.

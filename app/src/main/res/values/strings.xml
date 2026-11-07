@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Anton</string>
+    <string name="talk">Sprechen</string>
+    <string name="model_loading">Sprachmodell wird geladen …</string>
+    <string name="microphone_denied">Ohne Mikrofon kann Anton nicht hören.</string>
+    <string name="trial_progress">Test %1$d von %2$d, richtig: %3$d</string>
+    <string name="trial_finished">Fertig: %1$d von %2$d richtig erkannt.</string>
+    <string name="last_heard">Gehört: %1$s</string>
+</resources>
