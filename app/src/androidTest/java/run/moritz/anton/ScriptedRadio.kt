@@ -83,7 +83,7 @@ fun spoken(text: String): String {
     return text.filter { it.isLetterOrDigit() || it == '-' }.map { char ->
         val entry = table.entries.first { it.symbol.equals(char.toString(), ignoreCase = true) }
         when (entry.word) {
-            "Xanthippe" -> "san tippe"
+            "Xanthippe" -> "sankt tippe"
             "Eszett" -> "es zett"
             else -> entry.word.lowercase()
         }
