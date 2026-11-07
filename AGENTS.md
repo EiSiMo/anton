@@ -36,4 +36,4 @@ A native Android app in Kotlin that trains police officers to spell correctly ov
 - Few dependencies, each justified. Commit lockfiles.
 - Secrets only in `.env` at project root (gitignored). Keep `.env.example` with keys, no values.
 - License: MIT.
-- README has only "What it does", "Usage", "License". Docs describe the goal, not the current state.
+- README has the logo, screenshots and the sections Install, Usage, Accuracy, Building, Contributing, Acknowledgements, License. Docs describe the goal, not the current state.
