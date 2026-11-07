@@ -28,7 +28,7 @@ A Anton, Ä Ärger, B Berta, C Cäsar, Ch Charlotte, D Dora, E Emil, F Friedrich
 
 ## Cases
 
-**ID card and driving licence.** Fields in fixed order: surname, date of birth, first name. Both come from a catalog of fictional persons with generated portraits in `app/src/main/assets/persons`, one difficulty level per person. They are drawn after the official specimens of the 2024 ID card and the 2021 EU licence and, like those, are marked MUSTER. The app only shows front sides.
+**ID card and driving licence.** Fields in fixed order: surname, date of birth, first name. Both come from a catalog of fictional persons with generated portraits in `app/src/main/assets/persons`, one difficulty level per person. They are drawn after the official specimens of the 2024 ID card and the 2021 EU licence, with a handwritten signature derived from the name. The app only shows front sides.
 
 **Licence plate.** One field. Letters are spelled, digits are spoken one by one, and "Trennung" always follows the district code: "Berta, Trennung, Anton, Kaufmann, eins, zwo". The gap before the digits is silent. District codes are real.
 

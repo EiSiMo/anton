@@ -136,7 +136,6 @@
     <string name="about_credits">Spracherkennung: Vosk und vosk-model-small-de-0.15 (Apache 2.0). Schriften: Wine Tahoma (LGPL 2.1), Liberation (OFL 1.1), DejaVu. Personen und Porträts sind KI-generiert und frei erfunden.</string>
 
     <!-- Documents, printed like the real ones -->
-    <string name="specimen">MUSTER</string>
     <string name="card_country">DE</string>
     <string name="card_state">BUNDESREPUBLIK DEUTSCHLAND</string>
     <string name="card_state_translation">FEDERAL REPUBLIC OF GERMANY / RÉPUBLIQUE FÉDÉRALE D\'ALLEMAGNE</string>

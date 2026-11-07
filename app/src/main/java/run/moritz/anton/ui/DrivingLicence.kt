@@ -107,17 +107,10 @@ fun DrivingLicence(licence: Case.DrivingLicence, activeField: FieldKind?, modifi
         Label(licence.number, at(u, x, 32.2f), data, maxLines = 1)
 
         LicenceLine(u, "7.", 44f, number)
-        Signature(person.surname, at(u, x, 37.5f).size(u * 35f, u * 13f), Color(0xFF16181C))
+        Signature(person, at(u, x, 37.5f).size(u * 35f, u * 13f), Color(0xFF16181C))
 
         Label("9.", at(u, 2.4f, 50.6f), number, maxLines = 1)
         Label(licence.classes, at(u, 6.4f, 50.6f), data, maxLines = 1)
-
-        Label(
-            stringResource(R.string.specimen),
-            at(u, 80f, 32.2f),
-            printStyle(u, 3.6f, bold = true, color = Ink.copy(alpha = 0.45f)),
-            maxLines = 1
-        )
     }
 }
 

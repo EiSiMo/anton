@@ -2,7 +2,6 @@ package run.moritz.anton.ui
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,10 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -78,14 +75,7 @@ fun IdCard(card: Case.IdCard, activeField: FieldKind?, modifier: Modifier = Modi
         Label(person.expiryDate.format(Case.DATE_FORMAT), at(u, left, 46.7f), dataStyle(u, 3.5f), maxLines = 1)
         Label(card.accessNumber, at(u, 78f, 46.4f), dataStyle(u, 3.8f, spaced = 0.5f), maxLines = 1)
 
-        Signature(person.surname, at(u, 46f, 51.4f).size(u * 30f, u * 10f))
-
-        Box(at(u, 46f, 26f).size(u * 50f, u * 20f).rotate(-14f), contentAlignment = Alignment.Center) {
-            Label(
-                stringResource(R.string.specimen),
-                style = printStyle(u, 8f, bold = true, color = EuBlue.copy(alpha = 0.16f))
-            )
-        }
+        Signature(person, at(u, 46f, 51.4f).size(u * 30f, u * 10f))
     }
 }
 

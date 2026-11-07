@@ -250,7 +250,7 @@ fun BlockProgress(filled: Float, modifier: Modifier = Modifier, blocks: Int = 20
 fun StatusBar(modifier: Modifier = Modifier, panes: @Composable RowScope.() -> Unit) {
     Box(modifier.fillMaxWidth().background(Classic.Window)) {
         Row(
-            Modifier.navigationBarsPadding().height(32.dp).fillMaxWidth().padding(3.dp),
+            Modifier.navigationBarsPadding().height(32.dp).fillMaxWidth().padding(horizontal = 12.dp, vertical = 3.dp),
             horizontalArrangement = Arrangement.spacedBy(3.dp),
             content = panes
         )

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -153,27 +154,188 @@ internal fun PersonPortrait(person: Person, modifier: Modifier, filter: ColorFil
     }
 }
 
-/** A handwritten looking line derived from the name. */
+/** The person's own signature: the same person always signs alike, and no two sign the same way. */
 @Composable
-internal fun Signature(name: String, modifier: Modifier, color: Color = Color(0xFF1A2348)) {
+internal fun Signature(person: Person, modifier: Modifier, color: Color = Color(0xFF1A2348)) {
+    val strokes = remember(person) { SignatureHand(person).strokes() }
+    val weight = remember(person) { 0.75f + (person.surname.hashCode().mod(5)) * 0.14f }
     Canvas(modifier) {
-        val random = Random(name.hashCode())
-        val path = Path()
-        val w = size.width
-        val h = size.height
-        path.moveTo(w * 0.03f, h * 0.72f)
-        path.cubicTo(w * 0.05f, h * 0.02f, w * 0.15f, h * 0.0f, w * 0.1f, h * 0.9f)
-        path.cubicTo(w * 0.14f, h * 0.5f, w * 0.17f, h * 0.45f, w * 0.19f, h * 0.62f)
-        var x = w * 0.19f
-        val strokes = 6 + name.length / 2
-        repeat(strokes) {
-            val nextX = x + w * 0.7f / strokes
-            val peak = h * (0.1f + random.nextFloat() * 0.5f)
-            path.cubicTo(x + w * 0.012f, peak, nextX - w * 0.02f, h * 0.95f, nextX, h * 0.58f)
-            x = nextX
+        strokes.forEach { stroke ->
+            val path = Path()
+            val points = stroke.points.map { Offset(it.x * size.width, it.y * size.height) }
+            path.moveTo(points.first().x, points.first().y)
+            if (stroke.smooth) {
+                points.zipWithNext().forEach { (from, to) ->
+                    val middle = (from + to) / 2f
+                    path.quadraticTo(from.x, from.y, middle.x, middle.y)
+                }
+                path.lineTo(points.last().x, points.last().y)
+            } else {
+                points.drop(1).forEach { path.lineTo(it.x, it.y) }
+            }
+            val style = Stroke(weight * density, cap = StrokeCap.Round, join = StrokeJoin.Round)
+            drawPath(path, color, style = style)
         }
-        path.cubicTo(x + w * 0.05f, h * 0.2f, w * 0.6f, h * 1.0f, w * 0.12f, h * 0.88f)
-        drawPath(path, color, style = Stroke(1.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round))
+    }
+}
+
+private class SignatureStroke(val points: List<Offset>, val smooth: Boolean)
+
+/**
+ * Writes a name the way a hurried hand does: a large initial, a few readable letters that dissolve into a line,
+ * and a closing flourish. Every person gets their own slant, size, rhythm and flourish.
+ */
+private class SignatureHand(private val person: Person) {
+    private val random = Random("${person.firstName} ${person.surname}".hashCode())
+    private val slant = random.nextFloat() * 0.6f - 0.1f
+    private val rise = random.nextFloat() * 0.3f - 0.2f
+    private val letterHeight = 0.16f + random.nextFloat() * 0.2f
+    private val readable = 0.3f + random.nextFloat() * 0.7f
+    private val smooth = random.nextFloat() > 0.22f
+    private val withFirstInitial = random.nextFloat() < 0.45f
+    private val baseline = 0.62f
+
+    fun strokes(): List<SignatureStroke> {
+        val body = mutableListOf<Offset>()
+        val extras = mutableListOf<SignatureStroke>()
+        var x = 0.02f
+        if (withFirstInitial) {
+            extras += SignatureStroke(initial(x, 0.5f + random.nextFloat() * 0.3f), smooth)
+            x += 0.14f + random.nextFloat() * 0.08f
+        }
+        val initialPoints = initial(x, 1f)
+        body += initialPoints
+        x = initialPoints.maxOf { it.x } * 0.6f + x * 0.4f + 0.03f
+
+        val letters = person.surname.drop(1).filter { it.isLetter() }.lowercase()
+        val written = letters.take((letters.length * readable).toInt().coerceAtLeast(2))
+        val advance = (0.62f - x * 0.4f) / letters.length.coerceAtLeast(4)
+        written.forEach { letter ->
+            body += letterShape(letter, x, advance)
+            x += advance
+        }
+        val rest = letters.length - written.length
+        if (rest > 0) {
+            body += trail(x, advance * rest)
+            x += advance * rest
+        }
+        extras += flourish(body, x)
+        return (listOf(SignatureStroke(body, smooth)) + extras).fitted()
+    }
+
+    private fun jitter(amount: Float) = (random.nextFloat() - 0.5f) * amount
+
+    private fun initial(x: Float, scale: Float): List<Offset> {
+        val top = baseline - (0.45f + random.nextFloat() * 0.2f) * scale
+        val low = baseline + (0.1f + random.nextFloat() * 0.3f) * scale
+        val width = (0.05f + random.nextFloat() * 0.07f) * scale
+        return when (random.nextInt(4)) {
+            0 -> listOf(p(x, baseline), p(x + width * 0.3f, top), p(x + width, top + 0.1f), p(x + width * 0.2f, low))
+
+            1 -> listOf(
+                p(x + width, top + 0.12f),
+                p(x + width * 0.3f, top),
+                p(x, baseline - 0.1f),
+                p(x + width, baseline),
+                p(x + width * 1.3f, baseline - 0.2f),
+                p(x + width * 0.5f, low)
+            )
+
+            2 -> listOf(p(x - 0.01f, top + 0.15f), p(x + width * 1.4f, top), p(x + width * 0.5f, low), p(x, baseline))
+
+            else -> listOf(
+                p(x, low),
+                p(x + width * 0.6f, top),
+                p(x + width, baseline),
+                p(x + width * 1.2f, top + 0.08f)
+            )
+        }
+    }
+
+    private fun letterShape(letter: Char, x: Float, advance: Float): List<Offset> {
+        val up = baseline - letterHeight * (0.8f + random.nextFloat() * 0.4f)
+        return when (letter) {
+            in ASCENDERS -> {
+                val top = baseline - letterHeight * (1.9f + random.nextFloat() * 0.7f)
+                listOf(p(x, up), p(x + advance * 0.4f, top), p(x + advance * 0.55f, baseline), p(x + advance, up))
+            }
+
+            in DESCENDERS -> {
+                val low = baseline + letterHeight * (1.2f + random.nextFloat() * 0.9f)
+                listOf(p(x, up), p(x + advance * 0.5f, low), p(x + advance * 0.2f, baseline), p(x + advance, up))
+            }
+
+            else -> listOf(p(x + advance * 0.3f, baseline + jitter(0.06f)), p(x + advance * 0.7f, up + jitter(0.1f)))
+        }
+    }
+
+    /** The end of the name, where the pen just runs on. */
+    private fun trail(x: Float, length: Float): List<Offset> {
+        val waves = random.nextInt(0, 4)
+        return List(waves * 2 + 2) { index ->
+            val swing = if (index % 2 == 0) 0f else letterHeight * 0.45f
+            p(x + length * (index + 1) / (waves * 2 + 2), baseline - swing)
+        }
+    }
+
+    private fun flourish(body: MutableList<Offset>, endX: Float): List<SignatureStroke> {
+        val low = baseline + 0.16f + random.nextFloat() * 0.14f
+        return when (random.nextInt(6)) {
+            0 -> {
+                body += listOf(p(endX + 0.1f, baseline - 0.1f), p(endX - 0.2f, low), p(0.08f, low + 0.08f))
+                emptyList()
+            }
+
+            1 -> listOf(
+                SignatureStroke(listOf(p(0.1f, low), p(endX * 0.6f, low + 0.05f), p(endX + 0.08f, low - 0.05f)), true)
+            )
+
+            2 -> {
+                body += listOf(p(endX + 0.14f, baseline - 0.42f))
+                emptyList()
+            }
+
+            3 -> {
+                body +=
+                    listOf(
+                        p(endX + 0.04f, baseline + 0.1f),
+                        p(endX - 0.06f, baseline + 0.02f),
+                        p(
+                            endX + 0.1f,
+                            baseline - 0.1f
+                        )
+                    )
+                emptyList()
+            }
+
+            4 -> listOf(
+                SignatureStroke(listOf(p(endX * 0.45f, baseline - 0.4f), p(endX * 0.58f, baseline - 0.42f)), false)
+            )
+
+            else -> emptyList()
+        }
+    }
+
+    /** Applies the hand's slant and rising baseline. */
+    private fun p(x: Float, y: Float) = Offset(x + slant * (baseline - y) * 0.3f, y + rise * x)
+
+    /** Scales the signature into its box, keeping some of each hand's own size. */
+    private fun List<SignatureStroke>.fitted(): List<SignatureStroke> {
+        val all = flatMap { it.points }
+        val left = all.minOf { it.x }
+        val top = all.minOf { it.y }
+        val width = (all.maxOf { it.x } - left).coerceAtLeast(0.01f)
+        val height = (all.maxOf { it.y } - top).coerceAtLeast(0.01f)
+        val fill = 0.72f + random.nextFloat() * 0.26f
+        return map { stroke ->
+            val points = stroke.points.map { Offset((it.x - left) / width * fill, (it.y - top) / height * 0.95f) }
+            SignatureStroke(points, stroke.smooth)
+        }
+    }
+
+    private companion object {
+        const val ASCENDERS = "bdfhklt"
+        const val DESCENDERS = "gjpqyz"
     }
 }
 

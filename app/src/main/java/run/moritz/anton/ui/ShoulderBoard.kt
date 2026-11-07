@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import kotlin.math.PI
+import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
 import run.moritz.anton.progress.Insignia
@@ -110,11 +111,11 @@ private fun DrawScope.star(center: Offset, radius: Float, shades: MetalShades) {
 /** The top ranks wear the first star inside a wreath and the others beside it. */
 private fun DrawScope.wreathWithStars(stars: Int, buttonX: Float, h: Float, shades: MetalShades) {
     val center = Offset(h * 0.52f, h / 2)
-    val wreathRadius = h * 0.37f
-    val starRadius = h * 0.2f
+    val wreathRadius = h * 0.34f
+    val starRadius = h * 0.17f
     wreath(center, wreathRadius, shades)
     star(center, starRadius, shades)
-    val first = center.x + wreathRadius + h * 0.26f
+    val first = center.x + wreathRadius + h * 0.34f
     val last = buttonX - h * 0.3f
     val others = stars - 1
     repeat(others) { index ->
@@ -123,22 +124,55 @@ private fun DrawScope.wreathWithStars(stars: Int, buttonX: Float, h: Float, shad
     }
 }
 
+/** Two laurel branches rise from the bottom. Their pointed leaves stand in pairs and grow towards the top. */
 private fun DrawScope.wreath(center: Offset, radius: Float, shades: MetalShades) {
-    val leaves = 11
-    for (side in listOf(-1f, 1f)) {
-        repeat(leaves) { leaf ->
-            val angle = PI / 2 + side * (0.25 + leaf * 2.35 / leaves)
-            val at = Offset(
-                center.x + radius * cos(angle).toFloat(),
-                center.y + radius * sin(angle).toFloat()
-            )
-            rotate(Math.toDegrees(angle).toFloat() + side * 70f, at) {
-                drawOval(
-                    if (leaf % 2 == 0) shades.base else shades.light,
-                    at - Offset(radius * 0.17f, radius * 0.08f),
-                    Size(radius * 0.34f, radius * 0.16f)
-                )
+    val nodes = 7
+    val start = 0.16
+    val sweep = 2.42
+    for (side in listOf(-1.0, 1.0)) {
+        val stem = Path()
+        for (step in 0..24) {
+            val point = onArc(center, radius, side, start * 0.2 + (sweep + start * 0.8) * step / 24)
+            if (step == 0) stem.moveTo(point.x, point.y) else stem.lineTo(point.x, point.y)
+        }
+        drawPath(stem, shades.dark, style = Stroke(radius * 0.045f))
+        repeat(nodes) { node ->
+            val along = start + sweep * node / (nodes - 1)
+            val base = onArc(center, radius, side, along)
+            val growth = onArc(center, radius, side, along + 0.02) - base
+            val heading = atan2(growth.y, growth.x)
+            val length = radius * (0.42f - 0.012f * node)
+            if (node == nodes - 1) {
+                leaf(base, heading, length, shades.light)
+            } else {
+                leaf(base, heading - LEAF_SPREAD, length, shades.base)
+                leaf(base, heading + LEAF_SPREAD, length, shades.light)
             }
         }
     }
+}
+
+private const val LEAF_SPREAD = 0.62f
+
+/** A point on the wreath, measured from its bottom. [side] is -1 for the right branch and 1 for the left. */
+private fun onArc(center: Offset, radius: Float, side: Double, along: Double): Offset {
+    val angle = PI / 2 + side * along
+    return Offset(center.x + radius * cos(angle).toFloat(), center.y + radius * sin(angle).toFloat())
+}
+
+/** A pointed leaf from [base] in the direction [heading]. */
+private fun DrawScope.leaf(base: Offset, heading: Float, length: Float, color: Color) {
+    val along = Offset(cos(heading), sin(heading))
+    val across = Offset(-along.y, along.x)
+    val tip = base + along * length
+    val middle = base + along * (length * 0.45f)
+    val path = Path().apply {
+        moveTo(base.x, base.y)
+        val left = middle + across * (length * 0.34f)
+        quadraticTo(left.x, left.y, tip.x, tip.y)
+        val right = middle - across * (length * 0.34f)
+        quadraticTo(right.x, right.y, base.x, base.y)
+        close()
+    }
+    drawPath(path, color)
 }

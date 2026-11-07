@@ -190,7 +190,7 @@ fun SpellingTableScreen(model: AntonViewModel) {
         TitleBar(stringResource(R.string.spelling_table)) {
             TitleBarButton(Glyph.CLOSE, stringResource(R.string.table_close), onClick = model::closeTable)
         }
-        Box(Modifier.weight(1f).padding(10.dp)) {
+        Box(Modifier.weight(1f).padding(horizontal = 12.dp, vertical = 10.dp)) {
             Column(Modifier.fillMaxSize().background(Classic.White).sunken().padding(2.dp)) {
                 Row(Modifier.fillMaxWidth().background(Classic.Window)) {
                     HeaderCell(stringResource(R.string.table_column_letter), Modifier.width(LETTER_COLUMN))
