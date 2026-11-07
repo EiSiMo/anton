@@ -48,21 +48,25 @@ The app chooses the next case itself, mixing ID cards and plates and favouring l
 - The on-screen talk button and both volume keys are push-to-talk while a case is open.
 - Each field is one transmission.
 - A name may be said normally before it is spelled. Everything outside the recognizer vocabulary is ignored. If a spoken name is itself a spelling word, it is dropped when the rest of the transmission matches the field.
-- The transmission is evaluated on release.
+- The transmission is evaluated on release. While it is open, the radio log shows what is being heard.
+- A transmission that stops before the field ends counts as not understood, because a recognizer miss must not cost the streak. A word after the end of the field is a wrong word.
 
 | Result | Reaction | Streak |
 |---|---|---|
 | Correct | Field is confirmed and the next one opens | Kept |
-| Wrong word | Plausibility dialog shows the position, what was sent and what was expected. The field is repeated | Reset |
+| Wrong word | Plausibility dialog shows the position, what was sent and what was expected | Reset on "Wiederholen", which repeats the field |
 | Not understood | Asks to repeat | Kept |
-| Player taps "Das war richtig" | The field counts as correct and the misrecognition is recorded locally | Restored |
-| Spelling table opened during the case | The case can be finished but does not count as error-free | Reset |
+| Player taps "Das war richtig" | The field counts as correct and the misrecognition is recorded locally | Kept |
+| Spelling table opened during the case | After a warning. The case can be finished but does not count as error-free | Reset |
 
 ## Progress
 
 - A case is error-free when every field was correct at the first attempt.
 - Error-free cases fill the progress bar to the next rank. Ranks never drop. Reaching a rank shows an appointment certificate and unlocks harder material.
-- Mastery per letter updates after every field and is visible in the spelling table.
+- The bar to the next rank needs 5 error-free cases more per rank, capped at 50.
+- Material unlocks with the first ranks: difficulty 2 at Polizeimeister/in, 3 at Polizeiobermeister/in, 4 at Polizeikommissar-Anwärter/in. Higher ranks get a growing share of the hardest material.
+- Mastery covers every entry of the table including digits. It updates after every field: +1 for a confirmed symbol, -2 for a missed one. It is visible in the spelling table, and unsafe symbols appear as Wiedervorlage in the personnel file.
+- Drills only change mastery.
 
 Ranks follow the Berlin Schutzpolizei insignia (Polizei Berlin, as of July 2026). Shoulder boards are navy.
 
@@ -94,21 +98,23 @@ The look is deliberately that of classic Windows government software: grey windo
 
 - **First start:** microphone permission.
 - **Wache:** the player's personnel file with rank, progress and streak. Actions: next case, spelling table, settings.
-- **Vorgang:** the ID card or plate, the active field, a radio log with one cell per letter and the talk button.
+- **Vorgang:** the ID card or plate, the fields as tabs, a radio log with one cell per letter and the talk button, built like the speaker front of a radio. It takes all remaining room.
 - **Plausibility dialog:** feedback for a wrong word, part of Vorgang.
 - **Certificate:** appointment on reaching a rank.
 - **Buchstabiertafel:** table with mastery per letter. Tapping a row starts a short drill of that letter.
-- **Settings:** volume keys as push-to-talk, radio sounds, reset progress.
+- **Settings:** volume keys as push-to-talk, radio sounds, form of rank titles, reset progress, about.
 
 ## Architecture
 
-- Kotlin, Jetpack Compose, Room for progress, Vosk with `vosk-model-small-de-0.15` bundled in the APK.
+- Kotlin, Jetpack Compose, Room for progress, Vosk with `vosk-model-small-de-0.15` bundled in the APK, for arm64-v8a and armeabi-v7a.
 - The app needs the microphone permission and no internet permission.
 - Deep modules behind small interfaces:
   - `SpeechRecognizer`: turns a push-to-talk transmission into recognized words and hides Vosk.
   - `SpellingEvaluator`: compares recognized words with a field. Pure Kotlin.
   - `CaseGenerator`: produces the next case from rank and mastery. Pure Kotlin.
   - `ProgressStore`: persists rank, streak and mastery and hides Room.
+  - `CaseSession`: runs one case field by field and reports what changed as progress events. Pure Kotlin.
+- Radio sounds are synthesized and only play while the microphone is closed, so they never reach the recognizer.
 
 ### Recognizer vocabulary
 

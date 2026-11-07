@@ -20,11 +20,14 @@ A native Android app in Kotlin that trains police officers to spell correctly ov
 - Commit and push autonomously after each meaningful green step. Use Conventional Commits.
 
 ## Stack & Commands
-- Kotlin, Jetpack Compose, Gradle with version catalog (`gradle/libs.versions.toml`), Vosk. JDK 17 and Android SDK 37.
+- Kotlin, Jetpack Compose, Room, Gradle with version catalog (`gradle/libs.versions.toml`), Vosk. JDK 17 and Android SDK 37.
 - Test: `./gradlew :app:testDebugUnitTest`
-- Lint: `./gradlew :app:lintDebug`
+- UI flows on a device, with scripted speech: `./gradlew :app:connectedDebugAndroidTest`
+- Format: `./gradlew spotlessApply`
+- Lint: `./gradlew spotlessCheck :app:lintDebug`
 - Build: `./gradlew :app:assembleDebug`
 - Install on device: `adb install -r -g app/build/outputs/apk/debug/app-debug.apk`
+- Enable the pre-commit hook once per clone: `git config core.hooksPath .githooks`
 
 ## Conventions
 - Code, identifiers, comments, strings and commit messages in English. User-facing text lives in localization resources, never hardcoded.
