@@ -23,14 +23,14 @@ The classic German table, in this exact form:
 A Anton, Ä Ärger, B Berta, C Cäsar, Ch Charlotte, D Dora, E Emil, F Friedrich, G Gustav, H Heinrich, I Ida, J Julius, K Kaufmann, L Ludwig, M Martha, N Nordpol, O Otto, Ö Ökonom, P Paula, Q Quelle, R Richard, S Samuel, Sch Schule, T Theodor, U Ulrich, Ü Übermut, V Viktor, W Wilhelm, X Xanthippe, Y Ypsilon, Z Zacharias, ß Eszett.
 
 - Ch and Sch may be spelled as one word or letter by letter.
-- A hyphen in a name is spoken as "Bindestrich".
+- A hyphen in a name or plate is spoken as "Trennung". "Bindestrich" is an error.
 - Tables are data, so further alphabets can be added without code changes. Only this table ships at first.
 
 ## Cases
 
-**ID card.** Fields in fixed order: surname, date of birth, first name. The card looks like a realistic German ID card and carries only fictional data.
+**ID card and driving licence.** Fields in fixed order: surname, date of birth, first name. Both come from a catalog of fictional persons with generated portraits in `app/src/main/assets/persons`, one difficulty level per person. They are drawn after the official specimens of the 2024 ID card and the 2021 EU licence and, like those, are marked MUSTER. The app only shows front sides.
 
-**Licence plate.** One field. Letters are spelled, digits are spoken one by one and the hyphen is silent. District codes are real.
+**Licence plate.** One field. Letters are spelled, digits are spoken one by one, and "Trennung" always follows the district code: "Berta, Trennung, Anton, Kaufmann, eins, zwo". The gap before the digits is silent. District codes are real.
 
 **Digits** are spoken one by one: null, eins, zwo, drei, vier, fünf, sechs, sieben, acht, neun. "Zwei" is an error. A date of birth such as 03.12.1987 is spoken as "null drei eins zwo eins neun acht sieben". Spoken date forms may be widened once police training confirms the standard.
 
@@ -41,7 +41,7 @@ A Anton, Ä Ärger, B Berta, C Cäsar, Ch Charlotte, D Dora, E Emil, F Friedrich
 3. International names
 4. Long names, rare letters such as Q, X and Y
 
-The app chooses the next case itself, mixing ID cards and plates and favouring letters with low mastery.
+The app chooses the next case itself, mixing ID cards, driving licences and plates and favouring symbols that are due for review.
 
 ## Speaking and evaluation
 
@@ -65,14 +65,15 @@ The app chooses the next case itself, mixing ID cards and plates and favouring l
 - Error-free cases fill the progress bar to the next rank. Ranks never drop. Reaching a rank shows an appointment certificate and unlocks harder material.
 - The bar to the next rank needs 5 error-free cases more per rank, capped at 50.
 - Material unlocks with the first ranks: difficulty 2 at Polizeimeister/in, 3 at Polizeiobermeister/in, 4 at Polizeikommissar-Anwärter/in. Higher ranks get a growing share of the hardest material.
-- Mastery covers every entry of the table including digits. It updates after every field: +1 for a confirmed symbol, -2 for a missed one. It is visible in the spelling table, and unsafe symbols appear as Wiedervorlage in the personnel file.
+- Mastery covers every entry of the table including digits and works like a Leitner box or Anki deck. Each symbol has a level and a due date. A confirmed symbol moves up one level only when it was due, so repeating it right away proves nothing. The next review comes after 10 minutes, 1, 3, 7 or 21 days, by level. A miss costs two levels and makes the symbol due at once.
+- Due symbols come first when the next case is chosen, then new ones. They are listed as Wiedervorlage in the personnel file, and the table shows every symbol's level.
 - Drills only change mastery.
 
 Ranks follow the Berlin Schutzpolizei insignia (Polizei Berlin, as of July 2026). Shoulder boards are navy.
 
 | Rank | Insignia |
 |---|---|
-| In Ausbildung | Blue stripe |
+| Polizeimeister-Anwärter/in (PMA) | Blue stripe |
 | Polizeimeister/in | 2 blue stars |
 | Polizeiobermeister/in | 3 blue stars |
 | Polizeikommissar-Anwärter/in | Silver stripe |

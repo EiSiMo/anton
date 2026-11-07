@@ -155,7 +155,7 @@ class CaseFlowTest {
 
     @Test
     fun reachingARankShowsTheCertificate() {
-        launch(Progress(casesTowardNextRank = Rank.IN_TRAINING.casesToNext!! - 1, mastery = demoMastery()))
+        launch(Progress(casesTowardNextRank = Rank.POLICE_MASTER_CANDIDATE.casesToNext!! - 1, mastery = demoMastery()))
         screenshot("08_station_progressed")
         tag("next_case").performClick()
         finishCase(::currentFields)
@@ -166,7 +166,7 @@ class CaseFlowTest {
 
     @Test
     fun theTableStartsADrillThatLeavesTheStreakAlone() {
-        launch(Progress(streak = 4, bestStreak = 4, mastery = demoMastery()))
+        launch(Progress(streak = 4, bestStreak = 4, mastery = demoMastery(), dueAt = demoDue()))
         tag("open_table").performClick()
         screenshot("10_table")
         tag("row_A").performClick()
@@ -186,7 +186,8 @@ class CaseFlowTest {
                 streak = 17,
                 bestStreak = 31,
                 casesCompleted = 88,
-                mastery = demoMastery()
+                mastery = demoMastery(),
+                dueAt = demoDue()
             )
         )
         screenshot("13_station_senior")
@@ -194,15 +195,18 @@ class CaseFlowTest {
         val model = model()
         var plates = 0
         var cards = 0
+        var licences = 0
         var longNames = 0
         repeat(400) {
             when (val case = model.caseUi!!.case) {
                 is Case.Plate -> if (plates < 3) screenshot("14_plate_${plates++}")
 
                 is Case.IdCard -> {
-                    if (cards < 6) screenshot("15_card_${cards++}")
+                    if (cards < 4) screenshot("15_card_${cards++}")
                     if (case.person.surname.length > 18 && longNames < 2) screenshot("16_long_name_${longNames++}")
                 }
+
+                is Case.DrivingLicence -> if (licences < 4) screenshot("20_licence_${licences++}")
 
                 is Case.Drill -> Unit
             }
@@ -221,8 +225,12 @@ class CaseFlowTest {
         screenshot("19_reset_dialog")
         compose.onNodeWithText("Zurücksetzen").performClick()
         compose.waitForIdle()
-        assertEquals(Rank.IN_TRAINING, store.progress.rank)
+        assertEquals(Rank.POLICE_MASTER_CANDIDATE, store.progress.rank)
     }
+
+    private fun demoDue(): Map<String, Long> = SpellingTable.classicGerman.entries.mapIndexed { index, entry ->
+        entry.symbol to if (index % 5 == 0) 0L else Long.MAX_VALUE
+    }.toMap()
 
     private fun demoMastery(): Map<String, Int> {
         val entries = SpellingTable.classicGerman.entries

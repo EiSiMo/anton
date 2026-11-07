@@ -56,23 +56,33 @@ class SpellingEvaluatorTest {
     }
 
     @Test
-    fun `dots of a date and the hyphen and space of a plate are silent`() {
+    fun `the dots of a date and the space of a plate are silent`() {
         val date = evaluator.evaluate(Field(FieldKind.BIRTH_DATE, "03.12.1987"), "03121987".map { it.toString() })
-        val plate = evaluator.evaluate(
-            Field(FieldKind.PLATE, "B-AK 12"),
-            listOf("B", "A", "K", "1", "2")
-        )
+        val plate = evaluator.evaluate(Field(FieldKind.PLATE, "B-AK 12"), listOf("B", "-", "A", "K", "1", "2"))
         assertTrue(date is Evaluation.Correct)
         assertTrue(plate is Evaluation.Correct)
     }
 
     @Test
-    fun `the hyphen of a double name is spoken`() {
+    fun `a plate needs the separation after the district`() {
+        val result = evaluator.evaluate(Field(FieldKind.PLATE, "B-AK 12"), listOf("B", "A", "K", "1", "2"))
+        assertEquals("Trennung", (result as Evaluation.Wrong).expectedWord)
+    }
+
+    @Test
+    fun `the hyphen of a double name is spoken as separation`() {
         val field = surname("Abt-Ott")
         val spoken = evaluator.evaluate(field, listOf("A", "B", "T", "-", "O", "T", "T"))
         val silent = evaluator.evaluate(field, listOf("A", "B", "T", "O", "T", "T"))
         assertTrue(spoken is Evaluation.Correct)
-        assertEquals("Bindestrich", (silent as Evaluation.Wrong).expectedWord)
+        assertEquals("Trennung", (silent as Evaluation.Wrong).expectedWord)
+    }
+
+    @Test
+    fun `bindestrich is a wrong word for the separation`() {
+        val result = evaluator.evaluate(surname("Abt-Ott"), listOf("A", "B", "T", "bindestrich"))
+        assertEquals("bindestrich", (result as Evaluation.Wrong).sentWord)
+        assertEquals("Trennung", result.expectedWord)
     }
 
     @Test
@@ -89,7 +99,7 @@ class SpellingEvaluatorTest {
 
     @Test
     fun `a spoken name is not dropped from a plate`() {
-        val result = evaluator.evaluate(Field(FieldKind.PLATE, "B-A 1"), listOf("O", "B", "A", "1"))
+        val result = evaluator.evaluate(Field(FieldKind.PLATE, "B-A 1"), listOf("O", "B", "-", "A", "1"))
         assertTrue(result is Evaluation.Wrong)
     }
 

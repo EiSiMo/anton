@@ -22,7 +22,7 @@ class SpellingTable(val letters: List<SpellingEntry>, val digits: List<SpellingE
                 "0" to "null", "1" to "eins", "2" to "zwo", "3" to "drei", "4" to "vier",
                 "5" to "fünf", "6" to "sechs", "7" to "sieben", "8" to "acht", "9" to "neun"
             ).toEntries(),
-            signs = listOf("-" to "Bindestrich").toEntries()
+            signs = listOf("-" to "Trennung").toEntries()
         )
 
         private fun List<Pair<String, String>>.toEntries() = map { (symbol, word) -> SpellingEntry(symbol, word) }

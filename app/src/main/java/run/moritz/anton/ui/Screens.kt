@@ -113,7 +113,7 @@ fun StationScreen(model: AntonViewModel) {
                 FigureRow(stringResource(R.string.cases_completed), progress.casesCompleted)
             }
             GroupBox(stringResource(R.string.weak_letters)) {
-                WeakLetters(model, progress)
+                WeakLetters(model)
             }
         }
         Column(
@@ -155,27 +155,24 @@ private fun FigureRow(label: String, value: Int, large: Boolean = false, tag: St
 }
 
 @Composable
-private fun WeakLetters(model: AntonViewModel, progress: Progress) {
-    val weak = model.table.entries
-        .filter { (progress.mastery[it.symbol] ?: Progress.MAX_MASTERY) <= WEAK_MASTERY }
-        .sortedBy { progress.masteryOf(it.symbol) }
-        .take(MAX_WEAK_LETTERS)
+private fun WeakLetters(model: AntonViewModel) {
+    val weak = model.dueSymbols.take(MAX_WEAK_LETTERS)
     if (weak.isEmpty()) {
         Label(stringResource(R.string.weak_letters_empty))
         return
     }
     Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-        weak.forEach { entry ->
+        weak.forEach { symbol ->
             Box(
                 Modifier
                     .weight(1f)
                     .height(40.dp)
                     .background(Classic.White)
                     .thinSunken()
-                    .clickable(role = Role.Button) { model.startDrill(entry.symbol) },
+                    .clickable(role = Role.Button) { model.startDrill(symbol) },
                 contentAlignment = Alignment.Center
             ) {
-                Label(entry.symbol, style = Classic.Tile.copy(color = Classic.Error), maxLines = 1)
+                Label(symbol, style = Classic.Tile.copy(color = Classic.Error), maxLines = 1)
             }
         }
     }

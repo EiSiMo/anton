@@ -7,7 +7,7 @@ data class Insignia(val metal: Metal, val stars: Int = 0, val stripe: Boolean = 
 
 /** The player's permanent progress level, in promotion order. */
 enum class Rank(val insignia: Insignia) {
-    IN_TRAINING(Insignia(Metal.BLUE, stripe = true)),
+    POLICE_MASTER_CANDIDATE(Insignia(Metal.BLUE, stripe = true)),
     POLICE_MASTER(Insignia(Metal.BLUE, stars = 2)),
     SENIOR_POLICE_MASTER(Insignia(Metal.BLUE, stars = 3)),
     INSPECTOR_CANDIDATE(Insignia(Metal.SILVER, stripe = true)),

@@ -9,6 +9,7 @@ coreKtx = "1.17.0"
 room = "2.8.5"
 vosk = "0.3.75"
 junit = "4.13.2"
+json = "20250517"
 coroutines = "1.11.0"
 androidxTestRunner = "1.7.0"
 androidxTestExt = "1.3.0"
@@ -29,6 +30,7 @@ room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 vosk-android = { group = "com.alphacephei", name = "vosk-android", version.ref = "vosk" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
+json = { group = "org.json", name = "json", version.ref = "json" }
 coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
 androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "androidxTestRunner" }
 androidx-test-espresso = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso" }

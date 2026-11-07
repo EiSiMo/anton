@@ -3,6 +3,7 @@ package run.moritz.anton
 import android.app.Application
 import android.content.Context
 import run.moritz.anton.cases.CaseGenerator
+import run.moritz.anton.cases.PersonCatalog
 import run.moritz.anton.progress.ProgressStore
 import run.moritz.anton.progress.RoomProgressStore
 import run.moritz.anton.recognition.RecognitionVocabulary
@@ -21,6 +22,7 @@ class AppContainer(
     val settingsStore: SettingsStore,
     val sounds: RadioSounds,
     val generator: CaseGenerator,
+    val clock: () -> Long,
     val createRecognizer: suspend (RecognitionVocabulary) -> SpeechRecognizer
 )
 
@@ -38,7 +40,8 @@ class AntonApplication : Application() {
             progressStore = RoomProgressStore.create(context),
             settingsStore = SharedPreferencesSettingsStore(context),
             sounds = SynthesizedRadio(),
-            generator = CaseGenerator(table),
+            generator = CaseGenerator(table, PersonCatalog.load(context)),
+            clock = System::currentTimeMillis,
             createRecognizer = { vocabulary -> VoskSpeechRecognizer.create(context, vocabulary) }
         )
     }

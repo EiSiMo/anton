@@ -34,7 +34,7 @@
     <string name="streak_label">Fehlerfrei in Serie:</string>
     <string name="best_streak">Beste Serie:</string>
     <string name="weak_letters">Wiedervorlage</string>
-    <string name="weak_letters_empty">Keine unsicheren Buchstaben.</string>
+    <string name="weak_letters_empty">Heute ist nichts fällig.</string>
     <string name="status_streak">Serie: %1$d</string>
     <string name="insignia_description">Schulterstück: %1$s</string>
 
@@ -132,28 +132,32 @@
     <string name="reset_confirm">Zurücksetzen</string>
     <string name="about_title">Über Anton</string>
     <string name="about_version">Version %1$s</string>
-    <string name="about_body">Trainiert das Buchstabieren für den Funkverkehr. Alle Personen und Kennzeichen sind frei erfunden.</string>
-    <string name="about_credits">Spracherkennung: Vosk und vosk-model-small-de-0.15 (Apache 2.0). Schriften: Wine Tahoma (LGPL 2.1), Liberation (OFL 1.1).</string>
+    <string name="about_body">Trainiert das Buchstabieren für den Funkverkehr. Alle Personen, Dokumente und Kennzeichen sind frei erfunden.</string>
+    <string name="about_credits">Spracherkennung: Vosk und vosk-model-small-de-0.15 (Apache 2.0). Schriften: Wine Tahoma (LGPL 2.1), Liberation (OFL 1.1), DejaVu. Personen und Porträts sind KI-generiert und frei erfunden.</string>
 
-    <!-- ID card, printed like the real document -->
+    <!-- Documents, printed like the real ones -->
+    <string name="specimen">MUSTER</string>
+    <string name="card_country">DE</string>
     <string name="card_state">BUNDESREPUBLIK DEUTSCHLAND</string>
     <string name="card_state_translation">FEDERAL REPUBLIC OF GERMANY / RÉPUBLIQUE FÉDÉRALE D\'ALLEMAGNE</string>
     <string name="card_type">PERSONALAUSWEIS</string>
     <string name="card_type_translation">IDENTITY CARD / CARTE D\'IDENTITÉ</string>
-    <string name="card_surname">Name / Surname / Nom</string>
-    <string name="card_first_name">Vornamen / Given names / Prénoms</string>
-    <string name="card_birth_date">Geburtstag / Date of birth</string>
-    <string name="card_nationality">Staatsangehörigkeit / Nationality</string>
+    <string name="card_surname">Name/Surname/Nom</string>
+    <string name="card_first_name">Vornamen/Given names/Prénoms</string>
+    <string name="card_birth_date">Geburtstag/Date of birth/\nDate de naissance</string>
+    <string name="card_nationality">Staatsangehörigkeit/Nationality/\nNationalité</string>
     <string name="card_nationality_value">DEUTSCH</string>
-    <string name="card_birth_place">Geburtsort / Place of birth</string>
-    <string name="card_expiry">Gültig bis / Date of expiry</string>
-    <string name="card_signature">Unterschrift / Signature</string>
+    <string name="card_birth_place">Geburtsort/Place of birth/Lieu de naissance</string>
+    <string name="card_expiry">Gültig bis/Date of expiry/\nDate d\'expiration</string>
     <string name="card_description">Personalausweis von %1$s %2$s, geboren am %3$s</string>
+    <string name="licence_country">D</string>
+    <string name="licence_type">FÜHRERSCHEIN</string>
+    <string name="licence_description">Führerschein von %1$s %2$s, geboren am %3$s</string>
     <string name="plate_country">D</string>
     <string name="plate_description">Kennzeichen %1$s</string>
 
     <string-array name="rank_titles_male">
-        <item>In Ausbildung</item>
+        <item>Polizeimeister-Anwärter</item>
         <item>Polizeimeister</item>
         <item>Polizeiobermeister</item>
         <item>Polizeikommissar-Anwärter</item>
@@ -174,7 +178,7 @@
         <item>Polizeipräsident</item>
     </string-array>
     <string-array name="rank_titles_female">
-        <item>In Ausbildung</item>
+        <item>Polizeimeister-Anwärterin</item>
         <item>Polizeimeisterin</item>
         <item>Polizeiobermeisterin</item>
         <item>Polizeikommissar-Anwärterin</item>

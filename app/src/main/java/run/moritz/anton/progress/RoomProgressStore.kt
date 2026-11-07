@@ -11,6 +11,8 @@ import androidx.room.Query
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.Transaction
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 
 @Entity(tableName = "player")
 internal data class PlayerEntity(
@@ -27,7 +29,7 @@ internal data class PlayerEntity(
 }
 
 @Entity(tableName = "mastery")
-internal data class MasteryEntity(@PrimaryKey val symbol: String, val level: Int)
+internal data class MasteryEntity(@PrimaryKey val symbol: String, val level: Int, val dueAtMillis: Long)
 
 @Entity(tableName = "misrecognition")
 internal data class MisrecognitionEntity(
@@ -79,7 +81,7 @@ internal abstract class ProgressDao {
 
 @Database(
     entities = [PlayerEntity::class, MasteryEntity::class, MisrecognitionEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 internal abstract class ProgressDatabase : RoomDatabase() {
@@ -88,15 +90,18 @@ internal abstract class ProgressDatabase : RoomDatabase() {
 
 class RoomProgressStore private constructor(private val dao: ProgressDao) : ProgressStore {
     override suspend fun load(): Progress {
-        val mastery = dao.mastery().associate { it.symbol to it.level }
-        val player = dao.player() ?: return Progress(mastery = mastery)
+        val symbols = dao.mastery()
+        val mastery = symbols.associate { it.symbol to it.level }
+        val dueAt = symbols.associate { it.symbol to it.dueAtMillis }
+        val player = dao.player() ?: return Progress(mastery = mastery, dueAt = dueAt)
         return Progress(
             rank = Rank.valueOf(player.rank),
             casesTowardNextRank = player.casesTowardNextRank,
             streak = player.streak,
             bestStreak = player.bestStreak,
             casesCompleted = player.casesCompleted,
-            mastery = mastery
+            mastery = mastery,
+            dueAt = dueAt
         )
     }
 
@@ -108,7 +113,10 @@ class RoomProgressStore private constructor(private val dao: ProgressDao) : Prog
             bestStreak = progress.bestStreak,
             casesCompleted = progress.casesCompleted
         )
-        dao.save(player, progress.mastery.map { (symbol, level) -> MasteryEntity(symbol, level) })
+        val mastery = progress.mastery.map { (symbol, level) ->
+            MasteryEntity(symbol, level, progress.dueAt[symbol] ?: 0)
+        }
+        dao.save(player, mastery)
     }
 
     override suspend fun recordMisrecognition(expected: String?, heard: String) {
@@ -120,8 +128,20 @@ class RoomProgressStore private constructor(private val dao: ProgressDao) : Prog
     private fun now() = System.currentTimeMillis()
 
     companion object {
-        fun create(context: Context): RoomProgressStore {
-            val database = Room.databaseBuilder(context, ProgressDatabase::class.java, "progress").build()
+        const val DATABASE_NAME = "progress"
+
+        /** Adds review dates, so everything practised so far is due, and renames the first rank. */
+        private val ADD_REVIEW_DATES = object : Migration(1, 2) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE mastery ADD COLUMN dueAtMillis INTEGER NOT NULL DEFAULT 0")
+                db.execSQL("UPDATE player SET rank = 'POLICE_MASTER_CANDIDATE' WHERE rank = 'IN_TRAINING'")
+            }
+        }
+
+        fun create(context: Context, name: String = DATABASE_NAME): RoomProgressStore {
+            val database = Room.databaseBuilder(context, ProgressDatabase::class.java, name)
+                .addMigrations(ADD_REVIEW_DATES)
+                .build()
             return RoomProgressStore(database.progressDao())
         }
     }

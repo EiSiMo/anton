@@ -37,8 +37,6 @@ import kotlin.math.sin
 import run.moritz.anton.R
 import run.moritz.anton.cases.Case
 
-private val EuBlue = Color(0xFF003399)
-private val EuYellow = Color(0xFFFFCC00)
 private val InspectionColors = listOf(
     Color(0xFFE85D9E),
     Color(0xFF3FA34D),

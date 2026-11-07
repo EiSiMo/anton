@@ -6,7 +6,7 @@ import run.moritz.anton.spelling.SpellingTable
  * Translates between the spelling table and what the speech model can hear.
  *
  * Words missing from the model are represented by phrases of similar sounding known words. Words that are
- * deliberately wrong, such as "zwei" instead of "zwo", stay in the grammar so they are heard rather than
+ * deliberately wrong, such as "zwei" instead of "zwo" or "Bindestrich" instead of "Trennung", stay in the grammar so they are heard rather than
  * forced onto the nearest correct word.
  */
 class RecognitionVocabulary(table: SpellingTable) {
@@ -48,6 +48,6 @@ class RecognitionVocabulary(table: SpellingTable) {
             "xanthippe" to listOf("san tippe", "sankt tippe", "xanten tippe", "kanten tippe"),
             "eszett" to listOf("es zett")
         )
-        val WRONG_WORDS = listOf("zwei")
+        val WRONG_WORDS = listOf("zwei", "bindestrich")
     }
 }

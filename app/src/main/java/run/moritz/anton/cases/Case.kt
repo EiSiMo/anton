@@ -7,7 +7,7 @@ enum class FieldKind(val mayOpenWithName: Boolean, val keepsHyphen: Boolean) {
     SURNAME(mayOpenWithName = true, keepsHyphen = true),
     BIRTH_DATE(mayOpenWithName = false, keepsHyphen = false),
     FIRST_NAME(mayOpenWithName = true, keepsHyphen = true),
-    PLATE(mayOpenWithName = false, keepsHyphen = false),
+    PLATE(mayOpenWithName = false, keepsHyphen = true),
     DRILL(mayOpenWithName = false, keepsHyphen = true)
 }
 
@@ -19,31 +19,45 @@ data class Field(val kind: FieldKind, val text: String) {
 
 enum class Sex { FEMALE, MALE }
 
-/** A fictional person. Any likeness to a real person is coincidental. */
+/** A fictional person from the catalog. [level] is the difficulty of the name. */
 data class Person(
     val surname: String,
     val firstName: String,
     val sex: Sex,
     val birthDate: LocalDate,
-    val birthPlace: String
-)
+    val birthPlace: String,
+    val expiryDate: LocalDate,
+    val level: Int,
+    val portrait: String
+) {
+    /** Surname, date of birth and first name, in the order they are given over the radio. */
+    val fields: List<Field> = listOf(
+        Field(FieldKind.SURNAME, surname),
+        Field(FieldKind.BIRTH_DATE, birthDate.format(Case.DATE_FORMAT)),
+        Field(FieldKind.FIRST_NAME, firstName)
+    )
+}
 
 /** One task the player works through, field by field. */
 sealed interface Case {
     val fields: List<Field>
 
-    data class IdCard(
-        val person: Person,
+    /** The person whose document this is, if it has one. */
+    val person: Person? get() = null
+
+    data class IdCard(override val person: Person, val documentNumber: String, val accessNumber: String) : Case {
+        override val fields = person.fields
+    }
+
+    data class DrivingLicence(
+        override val person: Person,
+        val issueDate: LocalDate,
         val expiryDate: LocalDate,
-        val documentNumber: String,
-        val accessNumber: String,
-        val portraitSeed: Int
+        val authority: String,
+        val number: String,
+        val classes: String
     ) : Case {
-        override val fields = listOf(
-            Field(FieldKind.SURNAME, person.surname),
-            Field(FieldKind.BIRTH_DATE, person.birthDate.format(DATE_FORMAT)),
-            Field(FieldKind.FIRST_NAME, person.firstName)
-        )
+        override val fields = person.fields
     }
 
     data class Plate(val district: String, val letters: String, val digits: String) : Case {

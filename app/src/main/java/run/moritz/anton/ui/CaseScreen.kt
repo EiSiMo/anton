@@ -124,6 +124,12 @@ private fun Document(ui: CaseUi) {
     when (val case = ui.case) {
         is Case.IdCard -> IdCard(case, ui.field.kind.takeUnless { ui.finished }, Modifier.testTag("id_card"))
 
+        is Case.DrivingLicence -> DrivingLicence(
+            case,
+            ui.field.kind.takeUnless { ui.finished },
+            Modifier.testTag("driving_licence")
+        )
+
         is Case.Plate -> GroupBox(stringResource(R.string.group_plate)) {
             LicencePlate(case, Modifier.testTag("plate"))
         }

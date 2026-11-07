@@ -86,6 +86,9 @@ class AntonViewModel(private val container: AppContainer) : ViewModel() {
 
     private val sounds: RadioSounds get() = if (settings.radioSounds) container.sounds else SilentRadio
 
+    /** The symbols waiting for review right now, for the Wiedervorlage in the personnel file. */
+    val dueSymbols: List<String> get() = progress.dueSymbols(container.clock())
+
     val capturesVolumeKeys: Boolean get() = screen == Screen.CASE && settings.volumeKeysTalk
 
     init {
@@ -112,7 +115,7 @@ class AntonViewModel(private val container: AppContainer) : ViewModel() {
         speech = SpeechState.PermissionDenied
     }
 
-    fun startNextCase() = open(container.generator.next(progress.rank, progress.mastery))
+    fun startNextCase() = open(container.generator.next(progress, container.clock()))
 
     fun startDrill(symbol: String) = open(container.generator.drill(symbol))
 
@@ -203,7 +206,8 @@ class AntonViewModel(private val container: AppContainer) : ViewModel() {
 
     private fun apply(active: CaseSession, events: List<ProgressEvent>) {
         val rankBefore = progress.rank
-        progress = events.fold(progress) { state, event -> state.after(event) }
+        val now = container.clock()
+        progress = events.fold(progress) { state, event -> state.after(event, now) }
         val saved = progress
         viewModelScope.launch {
             events.filterIsInstance<ProgressEvent.Misrecognized>().forEach {

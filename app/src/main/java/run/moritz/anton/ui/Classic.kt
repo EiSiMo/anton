@@ -34,6 +34,7 @@ object Classic {
     val Sans = FontFamily(Font(R.font.tahoma_regular), Font(R.font.tahoma_bold, FontWeight.Bold))
     val Mono = FontFamily(Font(R.font.liberation_mono_bold, FontWeight.Bold))
     val Serif = FontFamily(Font(R.font.liberation_serif_regular), Font(R.font.liberation_serif_bold, FontWeight.Bold))
+    val DocumentData = FontFamily(Font(R.font.dejavu_sans_mono))
     val Print = FontFamily(Font(R.font.liberation_sans_regular), Font(R.font.liberation_sans_bold, FontWeight.Bold))
 
     val Body = TextStyle(fontFamily = Sans, fontSize = 15.sp, lineHeight = 20.sp, color = Black)

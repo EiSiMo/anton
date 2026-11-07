@@ -1,15 +1,11 @@
 package run.moritz.anton
 
 import androidx.test.platform.app.InstrumentationRegistry
-import java.time.LocalDate
 import kotlin.random.Random
-import run.moritz.anton.cases.Case
 import run.moritz.anton.cases.CaseGenerator
-import run.moritz.anton.cases.Person
-import run.moritz.anton.cases.Sex
+import run.moritz.anton.cases.PersonCatalog
 import run.moritz.anton.progress.Progress
 import run.moritz.anton.progress.ProgressStore
-import run.moritz.anton.progress.Rank
 import run.moritz.anton.recognition.SpeechRecognizer
 import run.moritz.anton.settings.Settings
 import run.moritz.anton.settings.SettingsStore
@@ -51,14 +47,6 @@ class MemorySettingsStore(private var settings: Settings = Settings()) : Setting
     }
 }
 
-val kowalczyk = Case.IdCard(
-    person = Person("Kowalczyk", "Jürgen", Sex.MALE, LocalDate.of(1987, 12, 3), "HAMBURG"),
-    expiryDate = LocalDate.of(2031, 5, 14),
-    documentNumber = "L01X00T47",
-    accessNumber = "314159",
-    portraitSeed = 7
-)
-
 /** Installs a container with scripted speech, so a test can play through real screens. */
 fun installScriptedApp(
     recognizer: ScriptedRecognizer,
@@ -73,7 +61,8 @@ fun installScriptedApp(
         progressStore = store,
         settingsStore = settings,
         sounds = SilentRadio,
-        generator = CaseGenerator(table, Random(seed)),
+        generator = CaseGenerator(table, PersonCatalog.load(application), Random(seed)),
+        clock = System::currentTimeMillis,
         createRecognizer = { recognizer }
     )
 }
@@ -90,5 +79,3 @@ fun spoken(text: String): String {
         }
     }.joinToString(" ")
 }
-
-val topRank get() = Rank.entries.last()
