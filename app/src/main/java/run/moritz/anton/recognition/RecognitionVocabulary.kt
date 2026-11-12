@@ -5,7 +5,8 @@ import run.moritz.anton.spelling.SpellingTable
 /**
  * Translates between the spelling table and what the speech model can hear.
  *
- * Words missing from the model are represented by phrases of similar sounding known words. [WRONG_WORDS], such as
+ * Words missing from the model, or known to it with a pronunciation players do not use, are represented by phrases
+ * of similar sounding known words. "Ypsilon" is rarely heard as spoken, while "Epsilon" matches it, so "Epsilon" stands in. [WRONG_WORDS], such as
  * "zwei" instead of "zwo" or "Siegfried" instead of "Samuel", stay in the grammar so they are heard rather than forced
  * onto the nearest correct word. They decode to themselves, which no field can match.
  */
@@ -46,6 +47,7 @@ class RecognitionVocabulary(table: SpellingTable) {
         const val UNKNOWN = "[unk]"
         val STAND_INS = mapOf(
             "xanthippe" to listOf("sankt tippe", "xanten tippe", "kanten tippe"),
+            "ypsilon" to listOf("epsilon"),
             "eszett" to listOf("es zett")
         )
     }

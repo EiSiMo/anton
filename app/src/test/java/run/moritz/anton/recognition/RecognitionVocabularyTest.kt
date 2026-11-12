@@ -15,7 +15,7 @@ class RecognitionVocabularyTest {
 
     @Test
     fun `decodes phrases that stand in for words missing from the model`() {
-        assertEquals(listOf("A", "X", "ß"), vocabulary.decode("anton sankt tippe es zett"))
+        assertEquals(listOf("A", "X", "Y", "ß"), vocabulary.decode("anton sankt tippe epsilon es zett"))
     }
 
     @Test
@@ -40,5 +40,6 @@ class RecognitionVocabularyTest {
         assertTrue("[unk]" in vocabulary.grammar)
         assertTrue("zwo" in vocabulary.grammar)
         assertTrue("xanthippe" !in vocabulary.grammar)
+        assertTrue("ypsilon" !in vocabulary.grammar)
     }
 }
